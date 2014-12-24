@@ -16,13 +16,6 @@ master |travis-master| (TODO: set up .travis.yml for master, or disable build of
 
 Coverage: |coveralls|
 
-
-
-System Requirements
-===================
-
-- TODO: specify system requirements
-
 Supported Python versions
 =========================
 
