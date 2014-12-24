@@ -2,7 +2,7 @@ purkinje
 ========
 
 
-Test runner for py.test test framework with web GUI
+py.test plugin for `pukinje test runner <https://github.com/bbiskup/purkinje/>`_
 
 Build Status
 ============
@@ -21,19 +21,14 @@ Coverage: |coveralls|
 System Requirements
 ===================
 
-- Currently, only Python 2.7.x is supported because of gevent. In the future, if gevent should support Python 3, purkinje should also support it. Alternatively, gevent
-  might get replaced e.g. by `guv <https://github.com/veegee/guv>`_.
-- tested on Ubuntu 14.04
-- needs a modern browser that supports WebSockets
+- TODO: specify system requirements
 
 Supported Python versions
 =========================
 
-- Currently, only 2.7.x is supported. Python 3 support is blocked by the following packages:
-
-  cssmin
-  gevent (which is blocking gevent-websocket)
-  inotifyx (which is blocking gevent_inotifyx)
+- Python 2.7.x
+- Python 3.x
+- pypy
 
 Development
 ===========
