@@ -50,6 +50,7 @@ class TestRunner:
         for roots, dirs, files in os.walk(dir):
             for f in files:
                 result += 1
+        return result
 
     @staticmethod
     def get_max_user_watches():
@@ -59,8 +60,9 @@ class TestRunner:
         with open('/proc/sys/fs/inotify/max_user_watches') as f:
             return int(f.read())
 
-    def start(self):
+    def start(self, single_run=True):
         """Watch directory forever and execute test cases
+           :param single_run: if True, only wait for a short time (testing)
         """
         print('{}: watching directory "{}"'.format(self.__class__, self._dir))
         self.observer.schedule(self.event_handler, self._dir, recursive=True)
@@ -73,6 +75,8 @@ class TestRunner:
         try:
             while True:
                 time.sleep(1)
+                if single_run:
+                    return
         except KeyboardInterrupt:
             self.observer.stop()
 

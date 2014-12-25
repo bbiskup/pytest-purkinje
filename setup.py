@@ -47,6 +47,7 @@ setup(name='purkinje-pytest',
       classifiers={
           'Development Status :: 2 - Pre-Alpha',
           'Environment :: Console',
+          'Environment :: Plugins',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
