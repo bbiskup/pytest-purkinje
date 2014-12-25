@@ -33,6 +33,7 @@ class Handler(FileSystemEventHandler):
             # Avoid infinite loop
             return
 
+        print("### {}".format(event.dest_path))
         if hasattr(event, 'dest_path') and self._filter(event.dest_path):
             print('>> Trigger: {}'.format(event))
             self.run_tests()
