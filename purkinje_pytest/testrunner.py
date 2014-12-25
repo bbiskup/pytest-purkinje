@@ -4,7 +4,7 @@
 
 from __future__ import print_function
 from watchdog.observers import Observer
-from watchdog.events import LoggingEventHandler
+from watchdog.events import FileSystemEventHandler
 import logging
 import time
 logger = logging.getLogger(__file__)
@@ -14,6 +14,32 @@ logger = logging.getLogger(__file__)
 
 # Extensions of files to be watched
 EXTENSIONS = ['.py']
+
+
+class Handler(FileSystemEventHandler):
+
+    """Triggers test execution when project contents change
+    """
+
+    def on_created(self, event):
+        self._trigger(event)
+
+    def on_deleted(self, event):
+        self._trigger(event)
+
+    def on_modified(self, event):
+        self._trigger(event)
+
+    def on_moved(self, event):
+        self._trigger(event)
+
+    def _filter(self, path):
+        """Determine whether a file is relevant to test execution"""
+        return path.endswith('.py')
+
+    def _trigger(self, event):
+        if self._filter(event.src_path):
+            print('##### Trigger: {} ####'.format(event))
 
 
 class TestRunner:
@@ -32,11 +58,7 @@ class TestRunner:
         #                             self._dir,
         #                             WATCH_MASK)
 
-        logging.basicConfig(level=logging.INFO,
-                            format='%(asctime)s - %(message)s',
-                            datefmt='%Y-%m-%d %H:%M:%S')
-
-        self.event_handler = LoggingEventHandler()
+        self.event_handler = Handler()
         self.observer = Observer()
 
     def start(self):
@@ -51,14 +73,6 @@ class TestRunner:
                 time.sleep(1)
         except KeyboardInterrupt:
             self.observer.stop()
-
-    def _filter(self, events):
-        """Select files that are relevant to test execution"""
-        print('Before filter: {}'.format(events))
-        for event in events:
-            n = event.name
-            if n.endswith('.py'):
-                yield event
 
     def _handle_event(self, e):
         print('Event: {}'.format(e))
