@@ -11,8 +11,6 @@ import os
 logger = logging.getLogger(__file__)
 
 
-#WATCH_MASK = inotify.IN_CLOSE_WRITE | inotify.IN_DELETE
-
 # Extensions of files to be watched
 EXTENSIONS = ['.py']
 
@@ -21,6 +19,7 @@ class Handler(FileSystemEventHandler):
 
     """Triggers test execution when project contents change
     """
+
     def __init__(self):
         self._tests_running = False
 
@@ -45,7 +44,6 @@ class Handler(FileSystemEventHandler):
             # Avoid infinite loop
             return
 
-        #print('#### {}'.format(event))
         if hasattr(event, 'dest_path') and self._filter(event.dest_path):
             print('>> Trigger: {}'.format(event))
             self.run_tests()
@@ -70,10 +68,6 @@ class TestRunner:
 
     def __init__(self, dir):
         self._dir = dir
-        #self._fd = inotify.init()
-        # self._wd = inotify.add_watch(self._fd,
-        #                             self._dir,
-        #                             WATCH_MASK)
 
         self.event_handler = Handler()
         self.observer = Observer()
