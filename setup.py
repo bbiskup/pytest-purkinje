@@ -8,7 +8,7 @@ history = open('HISTORY.rst').read()
 
 def parse_requirements():
     with open('requirements.txt') as req:
-        return req.readlines()
+        return [x for x in req.readlines() if not x.startswith('-e')]
 
 
 class Tox(TestCommand):
@@ -35,7 +35,15 @@ setup(name='purkinje-pytest',
       packages=['purkinje_pytest'],
       zip_safe=False,
       include_package_data=True,
-      # install_requires=parse_requirements(),
+      install_requires=parse_requirements(),
+      entry_points={
+          'pytest11': [
+              'purkinje = purkinje_pytest.testmonitorplugin',
+          ],
+          'console_scripts': [
+              'purkinje_runner = purkinje_pytest.testrunner:main'
+          ]
+      },
       classifiers={
           'Development Status :: 2 - Pre-Alpha',
           'Environment :: Console',

@@ -3,7 +3,7 @@
 from __future__ import print_function
 from builtins import object
 import websocket
-
+import logging
 from purkinje_messages.message import TestCaseStartEvent
 
 
@@ -19,7 +19,8 @@ class TestMonitorPlugin(object):
         self._websocket = None
 
         try:
-            self._websocket = websocket.WebSocket(websocket_url)
+            self._log('Connecting to WebSocket %s', websocket_url)
+            self._websocket = websocket.create_connection(websocket_url)
         except ValueError as e:
             self._log('Invalid WebSocket URL: "%s"',
                       self._websocket_url)
@@ -46,9 +47,9 @@ class TestMonitorPlugin(object):
                 self._log('purkinje server not available; event: %s',
                           ser_event)
         except Exception as e:
+            logging.exception(e)
             self._log('Error while sending event "%s": %s',
                       ser_event or event.data, e)
-            raise
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
@@ -65,3 +66,12 @@ class TestMonitorPlugin(object):
         # TODO use print, logging or py.test facility if it exists
         fmt = '** testmon: %s **' % fmt
         print(fmt % args)
+
+
+def pytest_addoption(parser):
+    parser.addoption('--websocket_url')
+
+
+def pytest_configure(config):
+    websocket_url = config.getoption('websocket_url')
+    config.pluginmanager.register(TestMonitorPlugin(websocket_url))
