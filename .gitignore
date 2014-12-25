@@ -3,9 +3,6 @@
 /MANIFEST
 /dist
 /.cache
-/purkinje/static/bower_components/
-/purkinje/static/.webassets-cache/
-/purkinje/static/gen/
 __pycache__
 /.coverage
 *.egg-info
@@ -13,8 +10,6 @@ __pycache__
 /.coverage*
 /.coverage*
 /htmlcov
-/node_modules
-/npm-debug.log
 /.tox
 *.bak
 /docs/_build

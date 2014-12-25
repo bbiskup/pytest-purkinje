@@ -35,7 +35,7 @@ setup(name='purkinje-pytest',
       packages=['purkinje_pytest'],
       zip_safe=False,
       include_package_data=True,
-      install_requires=parse_requirements(),
+      # install_requires=parse_requirements(),
       classifiers={
           'Development Status :: 2 - Pre-Alpha',
           'Environment :: Console',
