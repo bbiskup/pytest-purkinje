@@ -7,6 +7,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import logging
 import time
+import os
 logger = logging.getLogger(__file__)
 
 
@@ -20,6 +21,8 @@ class Handler(FileSystemEventHandler):
 
     """Triggers test execution when project contents change
     """
+    def __init__(self):
+        self._tests_running = False
 
     def on_created(self, event):
         self._trigger(event)
@@ -38,8 +41,22 @@ class Handler(FileSystemEventHandler):
         return path.endswith('.py')
 
     def _trigger(self, event):
-        if self._filter(event.src_path):
-            print('##### Trigger: {} ####'.format(event))
+        if self._tests_running:
+            # Avoid infinite loop
+            return
+
+        #print('#### {}'.format(event))
+        if hasattr(event, 'dest_path') and self._filter(event.dest_path):
+            print('>> Trigger: {}'.format(event))
+            self.run_tests()
+
+    def run_tests(self):
+        print('Running tests')
+        self._tests_running = True
+        try:
+            os.system('py.test')
+        finally:
+            self._tests_running = False
 
 
 class TestRunner:

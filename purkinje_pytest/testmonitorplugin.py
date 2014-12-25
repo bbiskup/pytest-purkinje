@@ -11,6 +11,8 @@ class TestMonitorPlugin(object):
 
     """py.test plugin for monitoring test progress and
        capturing results
+
+       TODO graceful termination
     """
 
     def __init__(self, websocket_url):
