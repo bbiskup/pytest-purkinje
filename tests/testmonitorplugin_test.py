@@ -11,7 +11,7 @@ TEST_WEBSOCKET_URL = 'ws://example.org/'
 def mock_ws(monkeypatch):
     ws = Mock()
     m = Mock(return_value=ws)
-    monkeypatch.setattr(sut.websocket, 'WebSocket', m)
+    monkeypatch.setattr(sut.websocket, 'create_connection', m)
     return ws
 
 
@@ -20,9 +20,15 @@ def plugin(mock_ws):
     return sut.TestMonitorPlugin(TEST_WEBSOCKET_URL)
 
 
-def test_1(plugin, mock_ws):
-    assert mock_ws.called_once_with('xyz')
+def test_1(plugin):
+    assert plugin._websocket.create_connection.called_once_with('xyz')
 
+
+def test_send_event(plugin):
+    mock_event = Mock()
+    plugin.send_event(mock_event)
+    assert mock_event.serialize.called
+    assert plugin._websocket.send.called
 
 # -*- coding: utf-8 -*-
 # """ Tests for py.test test runner
