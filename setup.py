@@ -24,6 +24,8 @@ class Tox(TestCommand):
         errcode = tox.cmdline(self.test_args)
         sys.exit(errcode)
 
+print "####", parse_requirements()
+
 setup(name='purkinje-pytest',
       version='0.1.0',
       description='py.test plugin for purkinje test runner',
