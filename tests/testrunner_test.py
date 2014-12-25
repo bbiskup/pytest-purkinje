@@ -6,6 +6,7 @@ from builtins import str
 
 # import os
 import pytest
+import os.path as op
 # import shutil
 # import json
 from mock import Mock
@@ -29,7 +30,13 @@ def test_creation(testrunner):
 
 
 def test_get_file_count(testrunner):
-    assert testrunner.get_file_count(testrunner._dir) == 0
+    # The directory itself counts as 1
+    assert testrunner.get_file_count(testrunner._dir) == 1
+    f = open(op.join(testrunner._dir, 'a_file'), 'w')
+    f.close()
+
+    # The newly created file counts as one, too
+    assert testrunner.get_file_count(testrunner._dir) == 2
 
 
 def test_get_max_user_watches(testrunner):

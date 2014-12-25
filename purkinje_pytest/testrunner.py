@@ -50,6 +50,7 @@ class TestRunner:
         for roots, dirs, files in os.walk(dir):
             for f in files:
                 result += 1
+            result += 1
         return result
 
     @staticmethod
