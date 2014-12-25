@@ -26,6 +26,18 @@ Supported Python versions
 Development
 ===========
 
+Setup
+-----
+
+Clone other relevant purkinje-* packages, then
+
+ mkvirtualenv purkinje
+ workon purkinje
+ pip install --editable .
+
+Conventions
+-----------
+
 - uses `semantic versioning <http://semver.org/>`_
 - uses `git-flow git workflow <http://nvie.com/posts/a-successful-git-branching-model/>`_
 - Download archive: `branch *dev*`__
