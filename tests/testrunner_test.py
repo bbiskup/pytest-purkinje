@@ -48,3 +48,11 @@ def test_start(testrunner):
     assert not obs_mock.schedule.called
     testrunner.start(single_run=True)
     assert obs_mock.schedule.called
+
+
+def test_main(monkeypatch):
+    runner = Mock()
+    monkeypatch.setattr(sut, 'TestRunner', Mock(return_value=runner))
+    sut.main()
+    assert sut.TestRunner.called
+    assert runner.start.called
