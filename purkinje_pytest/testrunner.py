@@ -75,9 +75,9 @@ class TestRunner:
 
         try:
             while True:
-                time.sleep(1)
                 if single_run:
                     return
+                time.sleep(1)
         except KeyboardInterrupt:
             self.observer.stop()
 
