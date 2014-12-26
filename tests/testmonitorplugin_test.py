@@ -40,6 +40,18 @@ def test_send_event(plugin):
     assert plugin._websocket.send.called
 
 
+def test_send_event_does_not_raise(plugin):
+    # ensure that test execution will continue
+    mock_event = Mock()
+
+    def do_raise():
+        raise Exception('Dummy exception')
+
+    mock_event.serialize.side_effect = do_raise
+    plugin.send_event(mock_event)
+    assert not plugin._websocket.send.called
+
+
 def test_pytest_collectreport(plugin):
     plugin.send_event = Mock()
     report = []
