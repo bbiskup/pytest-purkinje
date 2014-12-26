@@ -35,6 +35,9 @@ class TestRunner:
 
     @staticmethod
     def check_watch_limit(dir_):
+        """Checks whether system limit prevents watching all relevant
+           files
+        """
         max_user_watches = TestRunner.get_max_user_watches()
         file_count = TestRunner.get_file_count(dir_)
         if file_count > max_user_watches:
@@ -80,9 +83,6 @@ class TestRunner:
                 time.sleep(1)
         except KeyboardInterrupt:
             self.observer.stop()
-
-    def _handle_event(self, e):
-        print('Event: {}'.format(e))
 
 
 def main():
