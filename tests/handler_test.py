@@ -22,6 +22,11 @@ def non_py_event():
 
 
 @pytest.fixture
+def unpatched_handler():
+    return sut.Handler()  # need unpatched run_tests
+
+
+@pytest.fixture
 def handler(monkeypatch):
     result = sut.Handler()
     monkeypatch.setattr(result,
@@ -61,20 +66,26 @@ def test_moved(handler, py_event):
     assert handler._trigger.called
 
 
-def test_run_tests(handler, monkeypatch):
-    assert not handler._tests_running
-    monkeypatch.setattr(sut.os, 'system', Mock())
-    handler.run_tests()
-    assert not handler._tests_running
+def test_run_tests(unpatched_handler, monkeypatch):
+    assert not unpatched_handler._tests_running
+
+    def check_state(_):
+        assert unpatched_handler._tests_running
+
+    monkeypatch.setattr(sut.os, 'system', Mock(side_effect=check_state))
+    unpatched_handler.run_tests()
+    assert sut.os.system.called
+    assert not unpatched_handler._tests_running
 
 
-def test_run_tests_with_error(handler, monkeypatch):
-    assert not handler._tests_running
+def test_run_tests_with_error(unpatched_handler, monkeypatch):
+    assert not unpatched_handler._tests_running
 
-    def do_raise():
+    def do_raise(_):
         raise Exception('Dummy exception')
 
     sys_mock = Mock(side_effect=do_raise)
     monkeypatch.setattr(sut.os, 'system', sys_mock)
-    handler.run_tests()
-    assert not handler._tests_running
+    with pytest.raises(Exception):
+        unpatched_handler.run_tests()
+    assert not unpatched_handler._tests_running
