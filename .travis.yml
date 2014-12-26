@@ -1,0 +1,29 @@
+language: python
+python:
+  - "2.7"
+cache:
+  apt: true
+  # TODO local node modules path correct?
+  directories:
+    - $HOME/.pip-cache/
+    - $HOME/.tox
+    - /home/travis/virtualenv/python2.7
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+install:
+  - echo 'Running installation in directory $PWD'
+  - # Python
+  - pip install -r dev-requirements.txt --download-cache $HOME/.pip-cache --use-mirrors
+
+  - echo "Installed Python packages:"
+  - pip freeze
+
+script:
+  - tox
+
+  - # Documentation
+  # - make doc
+
+after_succes:
+  coveralls
