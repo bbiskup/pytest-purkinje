@@ -4,16 +4,10 @@
 from __future__ import absolute_import
 from builtins import str
 
-# import os
 import pytest
 import os.path as op
-# import shutil
-# import json
 from mock import Mock
-# from .conftest import TESTDATA_DIR
-# from purkinje_pytest import testmonitorplugin
 from purkinje_pytest import testrunner as sut
-# import flotsam.util as pu
 
 obs_mock = Mock()
 
