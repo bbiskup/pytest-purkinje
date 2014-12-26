@@ -60,6 +60,14 @@ def test_send_event_does_not_raise(plugin):
     assert not plugin._websocket.send.called
 
 
+def test_works_if_no_connection(plugin):
+    plugin._websocket = None
+    assert not plugin.is_websocket_connected()
+    mock_event = Mock()
+    plugin.send_event(mock_event)
+    assert not plugin.is_websocket_connected()
+
+
 def test_pytest_collectreport(plugin):
     plugin.send_event = Mock()
     report = []
