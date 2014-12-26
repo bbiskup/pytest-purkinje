@@ -2,7 +2,8 @@
 
 import pytest
 import purkinje_pytest.testmonitorplugin as sut
-from mock import Mock
+import purkinje_messages.message as msg
+from mock import Mock, call
 
 TEST_WEBSOCKET_URL = 'ws://example.org/'
 
@@ -22,6 +23,7 @@ def plugin(mock_ws):
 
 def test_1(plugin):
     assert plugin._websocket.create_connection.called_once_with('xyz')
+    assert plugin.is_websocket_connected()
 
 
 def test_send_event(plugin):
@@ -29,6 +31,18 @@ def test_send_event(plugin):
     plugin.send_event(mock_event)
     assert mock_event.serialize.called
     assert plugin._websocket.send.called
+
+
+def test_pytest_collectreport(plugin):
+    plugin.send_event = Mock()
+    report = []
+    plugin.pytest_collectreport(report)
+    assert len(plugin.send_event.call_args_list) == 1
+    assert type(plugin.send_event.call_args[0][0]) \
+        == msg.TestCaseStartEvent
+    assert len(plugin.reports) == 1
+    assert plugin.reports[0] == report
+
 
 # -*- coding: utf-8 -*-
 # """ Tests for py.test test runner

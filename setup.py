@@ -24,7 +24,6 @@ class Tox(TestCommand):
         errcode = tox.cmdline(self.test_args)
         sys.exit(errcode)
 
-print "####", parse_requirements()
 
 setup(name='purkinje-pytest',
       version='0.1.0',
@@ -52,10 +51,10 @@ setup(name='purkinje-pytest',
           'Environment :: Plugins',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
+          'Topic :: Software Development :: Testing',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 2.7',
-          # TODO ensure py3k support
-          'Programming Language :: Python :: 3.4',
+          # 'Programming Language :: Python :: 3.4',
       },
       license='The MIT License (MIT)',
       keywords='purkinje pytest testrunner websockets',
