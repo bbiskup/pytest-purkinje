@@ -29,7 +29,7 @@ Development
 Setup
 -----
 
-Clone other relevant purkinje-* packages, then
+Clone other relevant purkinje-* packages, then::
 
   mkvirtualenv purkinje
   workon purkinje 
