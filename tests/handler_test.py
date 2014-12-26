@@ -59,3 +59,22 @@ def test_modified(handler, py_event):
 def test_moved(handler, py_event):
     handler.on_moved(py_event)
     assert handler._trigger.called
+
+
+def test_run_tests(handler, monkeypatch):
+    assert not handler._tests_running
+    monkeypatch.setattr(sut.os, 'system', Mock())
+    handler.run_tests()
+    assert not handler._tests_running
+
+
+def test_run_tests_with_error(handler, monkeypatch):
+    assert not handler._tests_running
+
+    def do_raise():
+        raise Exception('Dummy exception')
+
+    sys_mock = Mock(side_effect=do_raise)
+    monkeypatch.setattr(sut.os, 'system', sys_mock)
+    handler.run_tests()
+    assert not handler._tests_running
