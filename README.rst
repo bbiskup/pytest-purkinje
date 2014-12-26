@@ -32,7 +32,9 @@ Setup
 Clone other relevant purkinje-* packages, then
 
  mkvirtualenv purkinje
+ 
  workon purkinje
+ 
  pip install --editable .
 
 Conventions
