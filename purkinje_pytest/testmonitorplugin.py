@@ -58,6 +58,7 @@ class TestMonitorPlugin(object):
 
     def pytest_collectstart(self, collector):
         self._log('pytest_collectstart: %s', collector)
+        # import pdb; pdb.set_trace()
 
     def pytest_collectreport(self, report):
         self._log('pytest_collectreport: %s', report)

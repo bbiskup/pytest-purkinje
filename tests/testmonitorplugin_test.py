@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+
+"""Test cases for py.test plugin
+
+   TODO: purkinje-pytest plugin is active during test execution;
+         -p no:purkinje-pytest does not disable it. This causes
+         error messages because there is no purkinje server available
+"""
+
 from __future__ import absolute_import
 from builtins import str
 import shutil
@@ -55,6 +63,7 @@ def test_send_event_does_not_raise(plugin):
 def test_pytest_collectreport(plugin):
     plugin.send_event = Mock()
     report = []
+    assert plugin.is_websocket_connected()
     plugin.pytest_collectreport(report)
     assert len(plugin.send_event.call_args_list) == 1
     assert type(plugin.send_event.call_args[0][0]) \
@@ -87,9 +96,9 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
         os.chdir(test_proj_path)
         mock_ws = Mock()
         monkeypatch.setattr(sut.websocket, 'create_connection', mock_ws)
+        assert plugin.is_websocket_connected()
         test_result = pytest.main([test_proj_path],
                                   plugins=[plugin])
-        assert plugin.is_websocket_connected()
 
         send_args = plugin._websocket.send.call_args_list
         assert len(send_args) == 2
