@@ -110,3 +110,9 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
 
     finally:
         os.chdir(orig_path)
+
+
+def test_pytest_addoption():
+    parser = Mock()
+    sut.pytest_addoption(parser)
+    assert parser.addoption.call_args[0][0] == '--websocket_url'
