@@ -3,5 +3,5 @@ future==0.14.3
 watchdog==0.8.2
 websocket-client==0.23.0
 voluptuous==0.8.7
--e git+git@github.com:bbiskup/flotsam.git@dev#egg=flotsam-dev
--e git+git@github.com:bbiskup/purkinje-messages.git@dev#egg=purkinje_messages-dev
+-e git+https://github.com/bbiskup/flotsam.git@dev#egg=flotsam-dev
+-e git+https://github.com/bbiskup/purkinje-messages.git@dev#egg=purkinje_messages-dev
