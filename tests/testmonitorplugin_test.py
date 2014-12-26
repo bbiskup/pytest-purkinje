@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+from builtins import str
+import shutil
+import os
 import pytest
+import flotsam.util as fu
+import json
+from .conftest import TESTDATA_DIR
 import purkinje_pytest.testmonitorplugin as sut
 import purkinje_messages.message as msg
-from mock import Mock, call
+from mock import Mock
 
 TEST_WEBSOCKET_URL = 'ws://example.org/'
 
@@ -44,76 +51,50 @@ def test_pytest_collectreport(plugin):
     assert plugin.reports[0] == report
 
 
-# -*- coding: utf-8 -*-
-# """ Tests for py.test test runner
-# """
-# from __future__ import absolute_import
-# from builtins import str
+def test_empty_single_pass(tmpdir, plugin, monkeypatch):
+    test_proj_path = str(tmpdir) + '/singlepass'
+    shutil.copytree(TESTDATA_DIR + '/testproj/singlepass',
+                    test_proj_path)
 
-# import os
-# import pytest
-# import shutil
-# import json
-# from mock import patch, Mock
-# from .conftest import TESTDATA_DIR
-# from purkinje_pytest import testmonitorplugin
-# from purkinje_pytest.testrunner import TestRunner
-# import flotsam.util as pu
+    # TODO
+    # Deletion of __pycache__ is necessary, or py.test will fail with the
+    # following error message:
+    #     #
+    # import file mismatch:
+    # imported module 'simple_test' has this __file__ attribute:
+    # /home/bb/devel/python/purkinje/testdata/
+    # testproj/singlepass/simple_test.py
+    # which is not the same as the test file we want to collect:
+    # /tmp/pytest-84/test_empty_single_pass0/singlepass/simple_test.py
+    # HINT: remove __pycache__ / .pyc files and/or use a unique basename
+    # for your test file modules
+    fu.ensure_deleted(test_proj_path + '/__pycache__')
 
+    orig_path = os.getcwd()
+    try:
+        os.chdir(test_proj_path)
+        mock_ws = Mock()
+        monkeypatch.setattr(sut.websocket, 'create_connection', mock_ws)
+        test_result = pytest.main([test_proj_path],
+                                  plugins=[plugin])
+        assert plugin.is_websocket_connected()
 
-# @pytest.fixture
-# def testrunner():
-#     return TestRunner()
+        send_args = plugin._websocket.send.call_args_list
+        assert len(send_args) == 2
 
+        [json.dumps(x[0]) for x in send_args]
 
-# def test_empty_single_pass(tmpdir, testrunner):
-#     test_proj_path = str(tmpdir) + '/singlepass'
-#     shutil.copytree(TESTDATA_DIR + '/testproj/singlepass',
-#                     test_proj_path)
+        assert test_result == 0
 
-# TODO
-# Deletion of __pycache__ is necessary, or py.test will fail with the
-# following error message:
-#     #
-# import file mismatch:
-# imported module 'simple_test' has this __file__ attribute:
-# /home/bb/devel/python/purkinje/testdata/
-# testproj/singlepass/simple_test.py
-# which is not the same as the test file we want to collect:
-# /tmp/pytest-84/test_empty_single_pass0/singlepass/simple_test.py
-# HINT: remove __pycache__ / .pyc files and/or use a unique basename
-# for your test file modules
-#     pu.ensure_deleted(test_proj_path + '/__pycache__')
+        reps = plugin.reports
+        assert len(reps) == 2
+        rep0 = reps[0]
+        assert rep0.fspath == '.'
+        assert rep0.outcome == 'passed'
 
-#     orig_path = os.getcwd()
-#     try:
-#         os.chdir(test_proj_path)
-#         mock_ws = Mock()
-#         with patch.object(testmonitorplugin, 'websocket') as ws:
-#             ws.WebSocket = Mock(return_value=mock_ws)
-#             test_result = testrunner.run("ws://dummy_websocket_url",
-#                                          [test_proj_path])
-#             assert testrunner.monitor_plugin.is_websocket_connected()
+        rep1 = reps[1]
+        assert rep1.fspath == 'simple_test.py'
+        assert rep1.outcome == 'passed'
 
-#             ws.WebSocket.assert_called_once_with(
-#                 'ws://dummy_websocket_url')
-
-#             send_args = mock_ws.send.call_args_list
-#             assert len(send_args) == 2
-
-#             [json.dumps(x[0]) for x in send_args]
-
-#         assert test_result == 0
-
-#         reps = testrunner.monitor_plugin.reports
-#         assert len(reps) == 2
-#         rep0 = reps[0]
-#         assert rep0.fspath == '.'
-#         assert rep0.outcome == 'passed'
-
-#         rep1 = reps[1]
-#         assert rep1.fspath == 'simple_test.py'
-#         assert rep1.outcome == 'passed'
-
-#     finally:
-#         os.chdir(orig_path)
+    finally:
+        os.chdir(orig_path)
