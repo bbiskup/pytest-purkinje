@@ -61,7 +61,7 @@ class TestRunner:
         with open('/proc/sys/fs/inotify/max_user_watches') as f:
             return int(f.read())
 
-    def start(self, single_run=True):
+    def start(self, single_run=False):
         """Watch directory forever and execute test cases
            :param single_run: if True, only wait for a short time (testing)
         """
