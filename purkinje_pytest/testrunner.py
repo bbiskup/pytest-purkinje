@@ -27,27 +27,27 @@ class TestRunner:
              Is this supported?
     """
 
-    def __init__(self, dir):
-        self._dir = dir
+    def __init__(self, dir_):
+        self._dir = dir_
 
         self.event_handler = Handler()
         self.observer = Observer()
 
     @staticmethod
-    def check_watch_limit(dir):
+    def check_watch_limit(dir_):
         max_user_watches = TestRunner.get_max_user_watches()
-        file_count = TestRunner.get_file_count(dir)
+        file_count = TestRunner.get_file_count(dir_)
         if file_count > max_user_watches:
             raise Exception(('User limit "max_user_watches" too low'
                              ' ({}) to watch all {} files')
                             .format(max_user_watches, file_count))
 
     @staticmethod
-    def get_file_count(dir):
+    def get_file_count(dir_):
         """Counts how many relevant files there are to watch
         """
         result = 0
-        for roots, dirs, files in os.walk(dir):
+        for roots, dirs, files in os.walk(dir_):
             for f in files:
                 result += 1
             result += 1
