@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import os
+import expiringdict
 from watchdog.events import FileSystemEventHandler, FileMovedEvent
+
+
+FILE_CACHE_SIZE = 10000
+
+# Avoid triggering test execution multiple times when the same file
+# was touched more than once; this might happen when the editor creates
+# a backup copy when saving a file
+FILE_CACHE_AGE = 1
 
 
 class Handler(FileSystemEventHandler):
@@ -11,6 +20,9 @@ class Handler(FileSystemEventHandler):
 
     def __init__(self):
         self._tests_running = False
+        self._file_cache = expiringdict.ExpiringDict(
+            max_len=FILE_CACHE_SIZE,
+            max_age_seconds=FILE_CACHE_AGE)
 
     def on_created(self, event):
         self._trigger(event)
@@ -36,8 +48,16 @@ class Handler(FileSystemEventHandler):
 
         relevant = False
         if isinstance(event, FileMovedEvent):
-            if self._filter(event.dest_path):
+            path = event.dest_path
+            if self._filter(path):
                 relevant = True
+        else:
+            path = False
+
+        if path in self._file_cache:
+            return
+        else:
+            self._file_cache[path] = True
 
         # for any event
         if self._filter(event.src_path):

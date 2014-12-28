@@ -5,3 +5,4 @@ websocket-client==0.23.0
 voluptuous==0.8.7
 -e git+https://github.com/bbiskup/flotsam.git@dev#egg=flotsam-dev
 -e git+https://github.com/bbiskup/purkinje-messages.git@dev#egg=purkinje_messages-dev
+expiringdict==1.1.3
