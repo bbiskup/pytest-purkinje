@@ -68,6 +68,22 @@ def test_send_event_does_not_raise(plugin):
     assert not plugin._websocket.send.called
 
 
+def test_pytest_sessionstart(plugin, monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    plugin.pytest_sessionstart()
+    assert plugin.send_event.called
+    assert type(plugin.send_event.call_args[0][0]) == msg.SessionStartedEvent
+
+
+def test_pytest_sessionfinish(plugin, monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    plugin.pytest_sessionfinish()
+    assert plugin.send_event.called
+
+    arg = plugin.send_event.call_args[0][0]
+    assert type(arg) == msg.ConnectionTerminationEvent
+
+
 def test_works_if_no_connection(plugin):
     plugin._websocket = None
     assert not plugin.is_websocket_connected()

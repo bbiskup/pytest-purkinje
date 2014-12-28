@@ -71,16 +71,16 @@ class TestMonitorPlugin(object):
         self._log('*** py.test session finished ***')
         self.send_event(ConnectionTerminationEvent())
 
-    def pytest_collection_modifyitems(self, session, config, items):
-        print('pytest_collection_modifyitems: {} {} {}'.format(session,
-                                                               config,
-                                                               items))
+    # def pytest_collection_modifyitems(self, session, config, items):
+    #     print('pytest_collection_modifyitems: {} {} {}'.format(session,
+    #                                                            config,
+    #                                                           items))
 
-    def pytest_collectstart(self, collector):
-        self._log('pytest_collectstart: %s', collector)
+    # def pytest_collectstart(self, collector):
+    #    self._log('pytest_collectstart: %s', collector)
 
     def pytest_runtest_logreport(self, report):
-        self._log('pytest_runtest_logreport: %s', report)
+        # self._log('pytest_runtest_logreport: %s', report)
         if ((report.when != 'call')
                 and not (report.when == 'setup'
                          and report.outcome == 'skipped')):
