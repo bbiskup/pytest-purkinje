@@ -153,3 +153,9 @@ def test_pytest_addoption():
     parser = Mock()
     sut.pytest_addoption(parser)
     assert parser.addoption.call_args[0][0] == '--websocket_url'
+
+
+def test_pytest_configure():
+    config = Mock()
+    sut.pytest_configure(config)
+    assert config.pluginmanager.register.called
