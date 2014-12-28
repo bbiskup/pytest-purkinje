@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from watchdog.events import FileSystemEventHandler
+from watchdog.events import FileSystemEventHandler, FileMovedEvent
 
 
 class Handler(FileSystemEventHandler):
@@ -29,11 +29,20 @@ class Handler(FileSystemEventHandler):
         return path.endswith('.py')
 
     def _trigger(self, event):
+        print("_trigger", event)
         if self._tests_running:
             # Avoid infinite loop
             return
 
-        if hasattr(event, 'dest_path') and self._filter(event.dest_path):
+        relevant = False
+        if isinstance(event, FileMovedEvent):
+            if self._filter(event.dest_path):
+                relevant = True
+        else:
+            if self._filter(event.src_path):
+                relevant = True
+
+        if relevant:
             print('>> Trigger: {}'.format(event))
             self.run_tests()
 

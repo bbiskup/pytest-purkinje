@@ -18,7 +18,7 @@ def non_py_event():
     """An event not concerning a Python file
        (to be ignored)
     """
-    return Mock(dest_path='/a/b/c/myfile.txt')
+    return Mock(src_path='/a/b/c/myfile.txt')
 
 
 @pytest.fixture
