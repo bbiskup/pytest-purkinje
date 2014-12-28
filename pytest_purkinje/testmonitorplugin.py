@@ -4,7 +4,8 @@ from __future__ import print_function
 from builtins import object
 import websocket
 import logging
-from purkinje_messages.message import TestCaseFinishedEvent
+from purkinje_messages.message import(
+    TestCaseFinishedEvent, ConnectionTerminationEvent)
 
 
 class TestMonitorPlugin(object):
@@ -55,6 +56,7 @@ class TestMonitorPlugin(object):
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
+        self.send_event(ConnectionTerminationEvent())
 
     # def pytest_collect_file(self, path, parent):
     #     print('pytest_collect_file: {}'.format(path))
@@ -66,7 +68,6 @@ class TestMonitorPlugin(object):
 
     def pytest_collectstart(self, collector):
         self._log('pytest_collectstart: %s', collector)
-        # import pdb; pdb.set_trace()
 
     def pytest_collectreport(self, report):
         self._log('pytest_collectreport: %s', report)
@@ -85,12 +86,11 @@ class TestMonitorPlugin(object):
 def pytest_addoption(parser):
     parser.addoption(
         '--websocket_url',
-        # action='append',
-        # nargs='?',
-        # default='ws://localhost:5000/event',
-        # const=True,
-        # dest='websocket_url',
-        # help='WebSocket URL of purkinje server'
+        nargs='?',
+        default='ws://localhost:5000/event',
+        const=True,
+        dest='websocket_url',
+        help='WebSocket URL of purkinje server'
     )
 
 

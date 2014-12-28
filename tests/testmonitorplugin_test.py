@@ -109,7 +109,7 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
                                   plugins=[plugin])
 
         send_args = plugin._websocket.send.call_args_list
-        assert len(send_args) == 2
+        assert len(send_args) == 3
 
         [json.dumps(x[0]) for x in send_args]
 
