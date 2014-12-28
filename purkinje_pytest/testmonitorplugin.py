@@ -56,6 +56,14 @@ class TestMonitorPlugin(object):
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
 
+    # def pytest_collect_file(self, path, parent):
+    #     print('pytest_collect_file: {}'.format(path))
+
+    def pytest_collection_modifyitems(self, session, config, items):
+        print('pytest_collection_modifyitems: {} {} {}'.format(session,
+                                                               config,
+                                                               items))
+
     def pytest_collectstart(self, collector):
         self._log('pytest_collectstart: %s', collector)
         # import pdb; pdb.set_trace()
@@ -64,6 +72,9 @@ class TestMonitorPlugin(object):
         self._log('pytest_collectreport: %s', report)
         self.send_event(TestCaseStartEvent(text='TODO xyz'))
         self.reports.append(report)
+
+        #import pdb
+        #pdb.set_trace()
 
     def _log(self, fmt, *args):
         # TODO use print, logging or py.test facility if it exists
