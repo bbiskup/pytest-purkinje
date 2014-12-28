@@ -45,11 +45,10 @@ class Handler(FileSystemEventHandler):
         """Determine whether a file is relevant to test execution"""
         return path.endswith('.py')
 
-    def _trigger(self, event):
-        if self._tests_running:
-            # Avoid infinite loop
-            return
-
+    def _is_relevant(self, event):
+        """Determines whether an event is relevant for test execution
+           (based on the file extension)
+        """
         relevant = False
         if isinstance(event, FileMovedEvent):
             path = event.dest_path
@@ -58,14 +57,35 @@ class Handler(FileSystemEventHandler):
         else:
             path = False
 
-        if path in self._file_cache:
-            return
-        else:
-            self._file_cache[path] = True
-
         # for any event
         if self._filter(event.src_path):
             relevant = True
+        return relevant
+
+    def _get_cache_key(self, event):
+        """Creates key for storing the path to which an event refers
+        """
+        if isinstance(event, FileMovedEvent):
+            path = event.dest_path
+        else:
+            path = event.src_path
+        return path
+
+    def _trigger(self, event):
+        """Called for any file event that might be of interest for test
+           execution.
+        """
+        if self._tests_running:
+            # Avoid infinite loop
+            return
+
+        relevant = self._is_relevant(event)
+
+        cache_key = self._get_cache_key(event)
+        if cache_key in self._file_cache:
+            return
+        else:
+            self._file_cache[cache_key] = True
 
         if relevant:
             print('>> Trigger: {}'.format(event))
