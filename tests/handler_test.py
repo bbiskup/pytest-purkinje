@@ -44,6 +44,12 @@ def test_created_relevant_event(handler, py_event):
     assert handler.run_tests.called
 
 
+def test_multi_trigger_avoidance(handler, py_event):
+    handler._trigger(py_event)
+    handler._trigger(py_event)  # second call should get ignored
+    assert len(handler.run_tests.call_args_list) == 1
+
+
 def test_created_irrelevant_event(handler,
                                   non_py_event):
     handler.on_created(non_py_event)
