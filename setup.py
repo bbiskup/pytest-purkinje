@@ -39,10 +39,10 @@ setup(name='pytest-purkinje',
       install_requires=parse_requirements(),
       entry_points={
           'pytest11': [
-              'purkinje e_pyte_purkinjest.testmonitorplugin',
+              'purkinje = pytest_purkinje.testmonitorplugin',
           ],
           'console_scripts': [
-              'purkinje_runner e_pyte_purkinjest.testrunner:main'
+              'purkinje_runner = pytest_purkinje.testrunner:main'
           ]
       },
       classifiers={
