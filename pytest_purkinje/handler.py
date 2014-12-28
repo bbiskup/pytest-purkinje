@@ -46,7 +46,6 @@ class Handler(FileSystemEventHandler):
         return path.endswith('.py')
 
     def _trigger(self, event):
-        print("_trigger", event)
         if self._tests_running:
             # Avoid infinite loop
             return
