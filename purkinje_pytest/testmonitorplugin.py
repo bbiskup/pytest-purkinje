@@ -73,8 +73,8 @@ class TestMonitorPlugin(object):
         self.send_event(TestCaseStartEvent(text='TODO xyz'))
         self.reports.append(report)
 
-        #import pdb
-        #pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
 
     def _log(self, fmt, *args):
         # TODO use print, logging or py.test facility if it exists
