@@ -113,21 +113,17 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
                                   plugins=[plugin])
 
         send_args = plugin._websocket.send.call_args_list
-        assert len(send_args) == 5
+        assert len(send_args) == 3
 
         [json.dumps(x[0]) for x in send_args]
 
         assert test_result == 0
 
         reps = plugin.reports
-        assert len(reps) == 3
+        assert len(reps) == 1
         rep0 = reps[0]
         assert rep0.fspath == 'simple_test.py'
         assert rep0.outcome == 'passed'
-
-        rep1 = reps[1]
-        assert rep1.fspath == 'simple_test.py'
-        assert rep1.outcome == 'passed'
 
     finally:
         os.chdir(orig_path)

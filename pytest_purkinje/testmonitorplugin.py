@@ -104,7 +104,8 @@ class TestMonitorPlugin(object):
         else:
             return
         self.send_event(TestCaseFinishedEvent(
-            name=tc_file + ' >>> ' + tc_name,
+            name=tc_name,
+            file=tc_file,
             verdict=VERDICT_MAP[report.outcome]))
         self.reports.append(report)
 
