@@ -88,6 +88,11 @@ class TestMonitorPlugin(object):
 
     def pytest_runtest_logreport(self, report):
         self._log('pytest_runtest_logreport: %s', report)
+        if ((report.when != 'call')
+                and not (report.when == 'setup'
+                         and report.outcome == 'skipped')):
+            return
+
         # import pdb
         # pdb.set_trace()
 
@@ -97,7 +102,7 @@ class TestMonitorPlugin(object):
         if len(tc_components) > 1:
             tc_name = tc_components[1]
         else:
-            tc_name = '<no name>'
+            return
         self.send_event(TestCaseFinishedEvent(
             name=tc_file + ' >>> ' + tc_name,
             verdict=VERDICT_MAP[report.outcome]))

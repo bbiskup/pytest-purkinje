@@ -74,6 +74,7 @@ def test_pytest_runtest_logreport(plugin):
     report.fspath = 'dummy_path'
     report.nodeid = 'dummy_path::test_1'
     report.outcome = 'passed'
+    report.when = 'call'
     assert plugin.is_websocket_connected()
     plugin.pytest_runtest_logreport(report)
     assert len(plugin.send_event.call_args_list) == 1
