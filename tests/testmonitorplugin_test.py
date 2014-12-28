@@ -76,14 +76,32 @@ def test_works_if_no_connection(plugin):
     assert not plugin.is_websocket_connected()
 
 
-def test_pytest_runtest_logreport(plugin, report):
-    plugin.send_event = Mock()
+def test_pytest_runtest_logreport(plugin, report, monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
     plugin.pytest_runtest_logreport(report)
     assert len(plugin.send_event.call_args_list) == 1
     assert type(plugin.send_event.call_args[0][0]) \
         == msg.TestCaseFinishedEvent
     assert len(plugin.reports) == 1
     assert plugin.reports[0] == report
+
+
+def test_pytest_runtest_logreport_no_detail(plugin, report, monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    report.nodeid = report.fs_path
+    plugin.pytest_runtest_logreport(report)
+    assert len(plugin.send_event.call_args_list) == 0
+    assert len(plugin.reports) == 0
+
+
+@pytest.mark.parametrize('phase', ['setup', 'teardown'])
+def test_pytest_runtest_logreport_ignore_phase(
+        phase, plugin, report, monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    report.when = phase
+    plugin.pytest_runtest_logreport(report)
+    assert len(plugin.send_event.call_args_list) == 0
+    assert len(plugin.reports) == 0
 
 
 def test_empty_single_pass(tmpdir, plugin, monkeypatch):
