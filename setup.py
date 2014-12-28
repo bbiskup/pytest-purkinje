@@ -25,24 +25,24 @@ class Tox(TestCommand):
         sys.exit(errcode)
 
 
-setup(name='purkinje-pytest',
+setup(name='pytest-purkinje',
       version='0.1.0',
       description='py.test plugin for purkinje test runner',
       long_description=readme + '\n\n' + history,
       author='Bernhard Biskup',
       author_email='bbiskup@gmx.de',
       url='biskup-software.de',
-      package_dir={'purkinje_pytest': 'purkinje_pytest'},
-      packages=['purkinje_pytest'],
+      package_dir={'pytest_purkinje': 'pytest_purkinje'},
+      packages=['pytest_purkinje'],
       zip_safe=False,
       include_package_data=True,
       install_requires=parse_requirements(),
       entry_points={
           'pytest11': [
-              'purkinje = purkinje_pytest.testmonitorplugin',
+              'purkinje e_pyte_purkinjest.testmonitorplugin',
           ],
           'console_scripts': [
-              'purkinje_runner = purkinje_pytest.testrunner:main'
+              'purkinje_runner e_pyte_purkinjest.testrunner:main'
           ]
       },
       classifiers={

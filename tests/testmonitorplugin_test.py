@@ -16,7 +16,7 @@ import pytest
 import flotsam.util as fu
 import json
 from .conftest import TESTDATA_DIR
-import purkinje_pytest.testmonitorplugin as sut
+import pytest_purkinje.testmonitorplugin as sut
 import purkinje_messages.message as msg
 from mock import Mock
 

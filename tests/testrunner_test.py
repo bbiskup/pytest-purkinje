@@ -7,7 +7,7 @@ from builtins import str
 import pytest
 import os.path as op
 from mock import Mock
-from purkinje_pytest import testrunner as sut
+from pytest_purkinje import testrunner as sut
 
 
 @pytest.fixture

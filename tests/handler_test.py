@@ -4,7 +4,7 @@
 
 import pytest
 from mock import Mock
-import purkinje_pytest.handler as sut
+import pytest_purkinje.handler as sut
 
 
 @pytest.fixture
