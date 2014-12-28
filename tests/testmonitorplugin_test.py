@@ -36,6 +36,14 @@ def plugin(mock_ws):
     return sut.TestMonitorPlugin(TEST_WEBSOCKET_URL)
 
 
+@pytest.fixture
+def report():
+    return Mock(fs_path='dummy_path',
+                nodeid='dummy_path::test_1',
+                outcome='passed',
+                when='call')
+
+
 def test_1(plugin):
     assert plugin._websocket.create_connection.called_once_with('xyz')
     assert plugin.is_websocket_connected()
@@ -68,14 +76,8 @@ def test_works_if_no_connection(plugin):
     assert not plugin.is_websocket_connected()
 
 
-def test_pytest_runtest_logreport(plugin):
+def test_pytest_runtest_logreport(plugin, report):
     plugin.send_event = Mock()
-    report = Mock()
-    report.fspath = 'dummy_path'
-    report.nodeid = 'dummy_path::test_1'
-    report.outcome = 'passed'
-    report.when = 'call'
-    assert plugin.is_websocket_connected()
     plugin.pytest_runtest_logreport(report)
     assert len(plugin.send_event.call_args_list) == 1
     assert type(plugin.send_event.call_args[0][0]) \
