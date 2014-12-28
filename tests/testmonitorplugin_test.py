@@ -3,8 +3,8 @@
 
 """Test cases for py.test plugin
 
-   TODO: purkinje-pytest plugin is active during test execution;
-         -p no:purkinje-pytest does not disable it. This causes
+   TODO: pytest_purkinje plugin is active during test execution;
+         -p no:pytest_purkinje does not disable it. This causes
          error messages because there is no purkinje server available
 """
 
