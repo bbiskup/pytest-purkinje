@@ -20,6 +20,11 @@ class Handler(FileSystemEventHandler):
 
     def __init__(self):
         self._tests_running = False
+        self.clear_cache()
+
+    def clear_cache(self):
+        """Clears/initializes file cache
+        """
         self._file_cache = expiringdict.ExpiringDict(
             max_len=FILE_CACHE_SIZE,
             max_age_seconds=FILE_CACHE_AGE)

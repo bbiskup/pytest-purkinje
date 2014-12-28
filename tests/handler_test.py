@@ -50,6 +50,13 @@ def test_multi_trigger_avoidance(handler, py_event):
     assert len(handler.run_tests.call_args_list) == 1
 
 
+def test_multi_trigger_avoidance_reset(handler, py_event):
+    handler._trigger(py_event)
+    handler.clear_cache()  # forget about first call
+    handler._trigger(py_event)  # second call get through
+    assert len(handler.run_tests.call_args_list) == 2
+
+
 def test_created_irrelevant_event(handler,
                                   non_py_event):
     handler.on_created(non_py_event)
