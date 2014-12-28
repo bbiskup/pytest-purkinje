@@ -38,9 +38,10 @@ class Handler(FileSystemEventHandler):
         if isinstance(event, FileMovedEvent):
             if self._filter(event.dest_path):
                 relevant = True
-        else:
-            if self._filter(event.src_path):
-                relevant = True
+
+        # for any event
+        if self._filter(event.src_path):
+            relevant = True
 
         if relevant:
             print('>> Trigger: {}'.format(event))
