@@ -71,13 +71,6 @@ class TestMonitorPlugin(object):
         self._log('*** py.test session finished ***')
         self.send_event(ConnectionTerminationEvent())
 
-    # def pytest_runtest_logreport(self, report):
-    #    print('*** pytest_runtest_logreport: {} ***'.format(report))
-    #    import pdb; pdb.set_trace()
-
-    # def pytest_collect_file(self, path, parent):
-    #     print('pytest_collect_file: {}'.format(path))
-
     def pytest_collection_modifyitems(self, session, config, items):
         print('pytest_collection_modifyitems: {} {} {}'.format(session,
                                                                config,
@@ -92,9 +85,6 @@ class TestMonitorPlugin(object):
                 and not (report.when == 'setup'
                          and report.outcome == 'skipped')):
             return
-
-        # import pdb
-        # pdb.set_trace()
 
         tc_file = report.fspath
         tc_components = report.nodeid.split('::')
