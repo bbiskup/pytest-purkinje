@@ -13,7 +13,7 @@ from builtins import str
 import shutil
 import os
 import pytest
-import flotsam.util as fu
+import flotsam.file_util as fu
 import json
 from .conftest import TESTDATA_DIR
 import pytest_purkinje.testmonitorplugin as sut
