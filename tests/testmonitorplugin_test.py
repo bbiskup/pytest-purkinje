@@ -75,7 +75,7 @@ def test_pytest_collectreport(plugin):
     plugin.pytest_collectreport(report)
     assert len(plugin.send_event.call_args_list) == 1
     assert type(plugin.send_event.call_args[0][0]) \
-        == msg.TestCaseStartEvent
+        == msg.TestCaseFinishedEvent
     assert len(plugin.reports) == 1
     assert plugin.reports[0] == report
 

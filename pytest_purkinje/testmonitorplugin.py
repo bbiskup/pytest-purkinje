@@ -4,7 +4,7 @@ from __future__ import print_function
 from builtins import object
 import websocket
 import logging
-from purkinje_messages.message import TestCaseStartEvent
+from purkinje_messages.message import TestCaseFinishedEvent
 
 
 class TestMonitorPlugin(object):
@@ -70,11 +70,11 @@ class TestMonitorPlugin(object):
 
     def pytest_collectreport(self, report):
         self._log('pytest_collectreport: %s', report)
-        self.send_event(TestCaseStartEvent(text='TODO xyz'))
-        self.reports.append(report)
-
         # import pdb
         # pdb.set_trace()
+        self.send_event(TestCaseFinishedEvent(name='xyz',
+                                              verdict='abc'))
+        self.reports.append(report)
 
     def _log(self, fmt, *args):
         # TODO use print, logging or py.test facility if it exists
@@ -83,7 +83,15 @@ class TestMonitorPlugin(object):
 
 
 def pytest_addoption(parser):
-    parser.addoption('--websocket_url')
+    parser.addoption(
+        '--websocket_url',
+        # action='append',
+        # nargs='?',
+        # default='ws://localhost:5000/event',
+        # const=True,
+        # dest='websocket_url',
+        # help='WebSocket URL of purkinje server'
+    )
 
 
 def pytest_configure(config):
