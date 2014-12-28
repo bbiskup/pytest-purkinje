@@ -5,7 +5,16 @@ from builtins import object
 import websocket
 import logging
 from purkinje_messages.message import(
+    SessionStartedEvent,
     TestCaseFinishedEvent, ConnectionTerminationEvent)
+
+
+VERDICT_MAP = {
+    'passed': 'pass',
+    'failed': 'fail',
+    'skipped': 'skipped',
+    'error': 'error'
+}
 
 
 class TestMonitorPlugin(object):
@@ -54,9 +63,17 @@ class TestMonitorPlugin(object):
             self._log('Error while sending event "%s": %s',
                       ser_event or event.data, e)
 
+    def pytest_sessionstart(self):
+        self._log('*** py.test session started ***')
+        self.send_event(SessionStartedEvent())
+
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
         self.send_event(ConnectionTerminationEvent())
+
+    # def pytest_runtest_logreport(self, report):
+    #    print('*** pytest_runtest_logreport: {} ***'.format(report))
+    #    import pdb; pdb.set_trace()
 
     # def pytest_collect_file(self, path, parent):
     #     print('pytest_collect_file: {}'.format(path))
@@ -69,12 +86,21 @@ class TestMonitorPlugin(object):
     def pytest_collectstart(self, collector):
         self._log('pytest_collectstart: %s', collector)
 
-    def pytest_collectreport(self, report):
-        self._log('pytest_collectreport: %s', report)
+    def pytest_runtest_logreport(self, report):
+        self._log('pytest_runtest_logreport: %s', report)
         # import pdb
         # pdb.set_trace()
-        self.send_event(TestCaseFinishedEvent(name='xyz',
-                                              verdict='abc'))
+
+        tc_file = report.fspath
+        tc_components = report.nodeid.split('::')
+
+        if len(tc_components) > 1:
+            tc_name = tc_components[1]
+        else:
+            tc_name = '<no name>'
+        self.send_event(TestCaseFinishedEvent(
+            name=tc_file + ' >>> ' + tc_name,
+            verdict=VERDICT_MAP[report.outcome]))
         self.reports.append(report)
 
     def _log(self, fmt, *args):

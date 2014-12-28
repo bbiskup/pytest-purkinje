@@ -68,11 +68,14 @@ def test_works_if_no_connection(plugin):
     assert not plugin.is_websocket_connected()
 
 
-def test_pytest_collectreport(plugin):
+def test_pytest_runtest_logreport(plugin):
     plugin.send_event = Mock()
-    report = []
+    report = Mock()
+    report.fspath = 'dummy_path'
+    report.nodeid = 'dummy_path::test_1'
+    report.outcome = 'passed'
     assert plugin.is_websocket_connected()
-    plugin.pytest_collectreport(report)
+    plugin.pytest_runtest_logreport(report)
     assert len(plugin.send_event.call_args_list) == 1
     assert type(plugin.send_event.call_args[0][0]) \
         == msg.TestCaseFinishedEvent
@@ -109,16 +112,16 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
                                   plugins=[plugin])
 
         send_args = plugin._websocket.send.call_args_list
-        assert len(send_args) == 3
+        assert len(send_args) == 5
 
         [json.dumps(x[0]) for x in send_args]
 
         assert test_result == 0
 
         reps = plugin.reports
-        assert len(reps) == 2
+        assert len(reps) == 3
         rep0 = reps[0]
-        assert rep0.fspath == '.'
+        assert rep0.fspath == 'simple_test.py'
         assert rep0.outcome == 'passed'
 
         rep1 = reps[1]
