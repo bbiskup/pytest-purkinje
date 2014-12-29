@@ -65,7 +65,8 @@ class Handler(FileSystemEventHandler):
     def _get_cache_key(self, event):
         """Creates key for storing the path to which an event refers
         """
-        if isinstance(event, FileMovedEvent):
+        if (isinstance(event, FileMovedEvent) and
+                self._filter(event.dest_path)):
             path = event.dest_path
         else:
             path = event.src_path
@@ -81,15 +82,19 @@ class Handler(FileSystemEventHandler):
 
         relevant = self._is_relevant(event)
 
+        if not relevant:
+            return
+
         cache_key = self._get_cache_key(event)
         if cache_key in self._file_cache:
+            print('>>>> %s is cached' % cache_key)
             return
         else:
+            print('>>>> %s NOT in cache' % cache_key)
             self._file_cache[cache_key] = True
 
-        if relevant:
-            print('>> Trigger: {}'.format(event))
-            self.run_tests()
+        print('>> Trigger: {}'.format(event))
+        self.run_tests()
 
     def run_tests(self):
         print('Running tests')
