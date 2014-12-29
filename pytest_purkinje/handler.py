@@ -3,6 +3,7 @@
 import os
 import expiringdict
 from watchdog.events import FileSystemEventHandler, FileMovedEvent
+from datetime import datetime, timedelta
 
 
 FILE_CACHE_SIZE = 10000
@@ -13,6 +14,9 @@ FILE_CACHE_SIZE = 10000
 FILE_CACHE_AGE = 1
 
 
+RETENTION_PERIOD = 1
+
+
 class Handler(FileSystemEventHandler):
 
     """Triggers test execution when project contents change
@@ -21,6 +25,7 @@ class Handler(FileSystemEventHandler):
     def __init__(self):
         self._tests_running = False
         self.clear_cache()
+        self._last_finished = None
 
     def clear_cache(self):
         """Clears/initializes file cache
@@ -72,12 +77,26 @@ class Handler(FileSystemEventHandler):
             path = event.src_path
         return path
 
+    def _in_retention_period(self):
+        """:return: True, if the last test execution was just
+                    finished
+        """
+        if not self._last_finished:
+            return False
+        else:
+            time_diff = self._last_finished + timedelta(
+                seconds=RETENTION_PERIOD)
+            return time_diff > datetime.now()
+
     def _trigger(self, event):
         """Called for any file event that might be of interest for test
            execution.
         """
         if self._tests_running:
             # Avoid infinite loop
+            return
+
+        if self._in_retention_period():
             return
 
         relevant = self._is_relevant(event)
@@ -103,3 +122,4 @@ class Handler(FileSystemEventHandler):
             os.system('py.test')
         finally:
             self._tests_running = False
+            self._last_finished = datetime.now()

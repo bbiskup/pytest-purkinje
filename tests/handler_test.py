@@ -2,9 +2,20 @@
 
 """Test for test runner handler"""
 
+from datetime import datetime
 import pytest
 from mock import Mock
 import pytest_purkinje.handler as sut
+
+
+@pytest.fixture
+def mock_date(monkeypatch):
+    m = Mock()
+    m.now.return_value = datetime(2014, 2, 1, 8, 9, 10)
+    monkeypatch.setattr(sut,
+                        'datetime',
+                        m)
+    m.isoformat = datetime.isoformat
 
 
 @pytest.fixture
@@ -64,6 +75,17 @@ def test_created_irrelevant_event(handler,
     assert not handler.run_tests.called
 
 
+def test_skip_when_in_retention_time(handler,
+                                     py_event,
+                                     monkeypatch):
+    monkeypatch.setattr(handler,
+                        '_in_retention_period',
+                        Mock(return_value=True))
+    handler.on_created(py_event)
+    assert handler._trigger.called
+    assert not handler.run_tests.called
+
+
 def test_deleted(handler, py_event):
     handler.on_deleted(py_event)
     assert handler._trigger.called
@@ -102,3 +124,15 @@ def test_run_tests_with_error(unpatched_handler, monkeypatch):
     with pytest.raises(Exception):
         unpatched_handler.run_tests()
     assert not unpatched_handler._tests_running
+
+
+@pytest.mark.parametrize('last_finished,expected', [
+    (datetime(2014, 2, 1, 8, 9, 10), True),
+    (datetime(2015, 2, 1, 8, 9, 10), True),
+    (datetime(2014, 2, 1, 8, 9, 0), False),
+])
+def test_is_in_retention_period(last_finished, expected,
+                                handler, mock_date, monkeypatch):
+    timestamp = last_finished
+    monkeypatch.setattr(handler, '_last_finished', timestamp)
+    assert handler._in_retention_period() == expected
