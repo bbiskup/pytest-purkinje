@@ -15,6 +15,7 @@ import os
 import pytest
 import flotsam.file_util as fu
 import json
+import time
 from .conftest import TESTDATA_DIR
 import pytest_purkinje.testmonitorplugin as sut
 import purkinje_messages.message as msg
@@ -93,13 +94,49 @@ def test_works_if_no_connection(plugin):
 
 
 def test_pytest_runtest_logreport(plugin, report, monkeypatch):
+    start_time = time.time()
     monkeypatch.setattr(plugin, 'send_event', Mock())
+    monkeypatch.setattr(sut.time,
+                        'time',
+                        Mock(return_value=start_time + 5))
+
+    monkeypatch.setattr(plugin, '_test_cases', {report.nodeid: start_time})
     plugin.pytest_runtest_logreport(report)
     assert len(plugin.send_event.call_args_list) == 1
-    assert type(plugin.send_event.call_args[0][0]) \
-        == msg.TestCaseFinishedEvent
+
+    event = plugin.send_event.call_args[0][0]
+    assert type(event) == msg.TestCaseFinishedEvent
+    assert event['duration'] == 5
     assert len(plugin.reports) == 1
     assert plugin.reports[0] == report
+
+
+def test_pytest_runtest_logreport_store_tc_start_time(plugin,
+                                                      monkeypatch,
+                                                      report):
+    start_time = time.time()
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    monkeypatch.setattr(sut.time,
+                        'time',
+                        Mock(return_value=start_time))
+    report.when = 'setup'
+    plugin.pytest_runtest_logreport(report)
+    assert len(plugin.send_event.call_args_list) == 0
+    assert len(plugin.reports) == 0
+    assert report.nodeid in plugin._test_cases
+    assert plugin._test_cases[report.nodeid] == start_time
+
+
+def test_pytest_runtest_logreport_ignore_tc_not_found(plugin,
+                                                      monkeypatch,
+                                                      report):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    monkeypatch.setattr(plugin, '_test_cases', {})
+    report.when = 'call'
+    plugin.pytest_runtest_logreport(report)
+    assert len(plugin.send_event.call_args_list) == 0
+    assert len(plugin.reports) == 0
+    assert report.nodeid not in plugin._test_cases
 
 
 def test_pytest_runtest_logreport_no_detail(plugin, report, monkeypatch):

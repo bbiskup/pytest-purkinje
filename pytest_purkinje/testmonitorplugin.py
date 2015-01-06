@@ -4,6 +4,7 @@ from __future__ import print_function
 from builtins import object
 import websocket
 import logging
+import time
 from purkinje_messages.message import(
     SessionStartedEvent,
     TestCaseFinishedEvent, ConnectionTerminationEvent)
@@ -29,6 +30,7 @@ class TestMonitorPlugin(object):
         self.reports = []
         self._websocket_url = websocket_url
         self._websocket = None
+        self._test_cases = {}
 
         try:
             self._log('Connecting to WebSocket %s', websocket_url)
@@ -81,10 +83,9 @@ class TestMonitorPlugin(object):
 
     def pytest_runtest_logreport(self, report):
         # self._log('pytest_runtest_logreport: %s', report)
-        if ((report.when != 'call')
-                and not (report.when == 'setup'
-                         and report.outcome == 'skipped')):
-            return
+
+        self._log('######## self._test_cases: %s %s %s',
+                  report.nodeid, report.when, self._test_cases)
 
         tc_file = report.fspath
         tc_components = report.nodeid.split('::')
@@ -93,10 +94,28 @@ class TestMonitorPlugin(object):
             tc_name = tc_components[1]
         else:
             return
+
+        rep_key = report.nodeid
+
+        if report.when == 'setup':
+            self._test_cases[rep_key] = time.time()
+
+        if ((report.when != 'call')
+                and not (report.when == 'setup'
+                         and report.outcome == 'skipped')):
+            return
+
+        if report.when == 'call':
+            if rep_key not in self._test_cases:
+                self._log('Test case {} not found'.format(tc_name))
+                return
+            duration = time.time() - self._test_cases[rep_key]
+
         self.send_event(TestCaseFinishedEvent(
             name=tc_name,
             file=tc_file,
-            verdict=VERDICT_MAP[report.outcome]))
+            verdict=VERDICT_MAP[report.outcome],
+            duration=duration))
         self.reports.append(report)
 
     def _log(self, fmt, *args):
