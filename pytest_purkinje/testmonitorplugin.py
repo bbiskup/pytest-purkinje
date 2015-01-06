@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+import pytest
 from builtins import object
 import websocket
 import os
@@ -109,13 +110,16 @@ class TestMonitorPlugin(object):
     def pytest_collectstart(self, collector):
         self._log('pytest_collectstart: %s', collector)
 
+    def _is_relevant_tc(self, tc):
+        return isinstance(tc, pytest.Item)
+
     def pytest_collectreport(self, report):
         self._log('pytest_collectreport: %s', report)
 
         test_funcs = [x
                       for x
                       in report.result
-                      if isinstance(x, pyp.Function)
+                      if self._is_relevant_tc(x)
                       ]
         TestMonitorPlugin.tc_count += len(test_funcs)
         # import pdb; pdb.set_trace()
