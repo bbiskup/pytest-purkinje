@@ -39,7 +39,6 @@ class TestMonitorPlugin(object):
         self._websocket = None
         self._test_cases = {}
         self._current_suite = None
-        self._current_suite_hash = None
 
         try:
             self._log('Connecting to WebSocket %s', websocket_url)
@@ -60,8 +59,8 @@ class TestMonitorPlugin(object):
         return '{}: {}'.format(socket.gethostname(),
                                current_dir)
 
-    def suite_hash(self, suite_name):
-        return md5.md5(suite_name).hexdigest()
+    def suite_hash(self):
+        return md5.md5(self.suite_name()).hexdigest()
 
     def send_event(self, event):
         """Send event via WebSocket connection.
@@ -92,17 +91,16 @@ class TestMonitorPlugin(object):
 
     def _send_start_event(self):
         self._current_suite = self.suite_name()
-        self._current_suite_hash = self.suite_hash(self._current_suite)
         self.send_event(SessionStartedEvent(
-            suite_name=self._current_suite,
-            suite_hash=self._current_suite_hash,
+            suite_name=self.suite_name(),
+            suite_hash=self.suite_hash(),
             tc_count=TestMonitorPlugin.tc_count
         ))
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
         self.send_event(ConnectionTerminationEvent(
-            suite_hash=self._current_suite_hash
+            suite_hash=self.suite_hash()
         ))
 
     # def pytest_collection_modifyitems(self, session, config, items):
@@ -153,7 +151,7 @@ class TestMonitorPlugin(object):
             file=tc_file,
             verdict=VERDICT_MAP[report.outcome],
             duration=duration,
-            suite_hash=self._current_suite_hash))
+            suite_hash=self.suite_hash()))
         self.reports.append(report)
 
     def _log(self, fmt, *args):

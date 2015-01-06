@@ -80,6 +80,12 @@ def test_suite_name(plugin, monkeypatch):
     assert plugin.suite_name() == expected
 
 
+def test_suite_hash(plugin, monkeypatch):
+    monkeypatch.setattr(plugin, 'suite_name',
+                        Mock(return_value='testsuite_1'))
+    assert plugin.suite_hash() == 'd50c6441c9f5bd95c8e6dbde301b2b11'
+
+
 def test_pytest_sessionstart(plugin, monkeypatch):
     monkeypatch.setattr(plugin, 'send_event', Mock())
     monkeypatch.setattr(plugin,
