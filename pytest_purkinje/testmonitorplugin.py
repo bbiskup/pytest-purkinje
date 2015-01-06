@@ -121,7 +121,7 @@ class TestMonitorPlugin(object):
         # import pdb; pdb.set_trace()
 
     def pytest_runtest_logreport(self, report):
-        self._log('pytest_runtest_logreport: %s', report)
+        # self._log('pytest_runtest_logreport: %s', report)
 
         # self._log('######## self._test_cases: %s %s %s',
         #          report.nodeid, report.when, self._test_cases)
@@ -136,6 +136,11 @@ class TestMonitorPlugin(object):
             # for the test case
             if 'pep8' in report.keywords:
                 tc_name = 'PEP8'
+                # when found in cache, the py.test pep8 plugin
+                # reports skipped tests for each unchanged
+                # Python files. For testing, the py.test
+                # option --clearcache may be used to force
+                # execution of pep8 checks on each file
             else:
                 tc_name = str(report.keywords)
 
@@ -162,7 +167,6 @@ class TestMonitorPlugin(object):
             self._send_start_event()
             self._start_message_sent = True
 
-        self._log('SENDING')
         self.send_event(TestCaseFinishedEvent(
             name=tc_name,
             file=tc_file,
