@@ -91,7 +91,9 @@ class TestMonitorPlugin(object):
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
-        self.send_event(ConnectionTerminationEvent())
+        self.send_event(ConnectionTerminationEvent(
+            suite_hash=self._current_suite_hash
+            ))
 
     # def pytest_collection_modifyitems(self, session, config, items):
     #     print('pytest_collection_modifyitems: {} {} {}'.format(session,
@@ -136,7 +138,8 @@ class TestMonitorPlugin(object):
             name=tc_name,
             file=tc_file,
             verdict=VERDICT_MAP[report.outcome],
-            duration=duration))
+            duration=duration,
+            suite_hash=self._current_suite_hash))
         self.reports.append(report)
 
     def _log(self, fmt, *args):
