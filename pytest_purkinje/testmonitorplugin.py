@@ -39,6 +39,7 @@ class TestMonitorPlugin(object):
         self._websocket = None
         self._test_cases = {}
         self._current_suite = None
+        self._start_message_sent = False
 
         try:
             self._log('Connecting to WebSocket %s', websocket_url)
@@ -84,10 +85,6 @@ class TestMonitorPlugin(object):
 
     def pytest_sessionstart(self):
         self._log('*** py.test session started ***')
-        if TestMonitorPlugin.tc_count:
-            self._send_start_event()
-        else:
-            self._log('No test cases (yet)')
 
     def _send_start_event(self):
         self._current_suite = self.suite_name()
@@ -145,6 +142,10 @@ class TestMonitorPlugin(object):
                 return
             duration = int((time.time()
                             - self._test_cases[rep_key]) * 1000)
+
+        if not self._start_message_sent:
+            self._send_start_event()
+            self._start_message_sent = True
 
         self.send_event(TestCaseFinishedEvent(
             name=tc_name,
