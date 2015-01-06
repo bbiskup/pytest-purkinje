@@ -4,7 +4,6 @@ from __future__ import print_function
 from builtins import object
 import websocket
 import os
-import os.path as op
 import logging
 import time
 import socket
