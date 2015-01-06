@@ -111,12 +111,13 @@ class TestMonitorPlugin(object):
     def pytest_collectreport(self, report):
         self._log('pytest_collectreport: %s', report)
         TestMonitorPlugin.tc_count += len(report.result)
+        # import pdb; pdb.set_trace()
 
     def pytest_runtest_logreport(self, report):
         # self._log('pytest_runtest_logreport: %s', report)
 
-        self._log('######## self._test_cases: %s %s %s',
-                  report.nodeid, report.when, self._test_cases)
+        # self._log('######## self._test_cases: %s %s %s',
+        #          report.nodeid, report.when, self._test_cases)
 
         tc_file = report.fspath
         tc_components = report.nodeid.split('::')
@@ -142,6 +143,8 @@ class TestMonitorPlugin(object):
                 return
             duration = int((time.time()
                             - self._test_cases[rep_key]) * 1000)
+        else:
+            duration = 0
 
         if not self._start_message_sent:
             self._send_start_event()
