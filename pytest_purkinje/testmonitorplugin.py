@@ -109,7 +109,8 @@ class TestMonitorPlugin(object):
             if rep_key not in self._test_cases:
                 self._log('Test case {} not found'.format(tc_name))
                 return
-            duration = time.time() - self._test_cases[rep_key]
+            duration = int((time.time()
+                            - self._test_cases[rep_key]) * 1000)
 
         self.send_event(TestCaseFinishedEvent(
             name=tc_name,

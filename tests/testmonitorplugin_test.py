@@ -106,7 +106,7 @@ def test_pytest_runtest_logreport(plugin, report, monkeypatch):
 
     event = plugin.send_event.call_args[0][0]
     assert type(event) == msg.TestCaseFinishedEvent
-    assert event['duration'] == 5
+    assert event['duration'] == 5000
     assert len(plugin.reports) == 1
     assert plugin.reports[0] == report
 
