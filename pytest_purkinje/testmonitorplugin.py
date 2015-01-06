@@ -3,8 +3,12 @@
 from __future__ import print_function
 from builtins import object
 import websocket
+import os
+import os.path as op
 import logging
 import time
+import socket
+import md5
 from purkinje_messages.message import(
     SessionStartedEvent,
     TestCaseFinishedEvent, ConnectionTerminationEvent)
@@ -31,6 +35,8 @@ class TestMonitorPlugin(object):
         self._websocket_url = websocket_url
         self._websocket = None
         self._test_cases = {}
+        self._current_suite = None
+        self._current_suite_hash = None
 
         try:
             self._log('Connecting to WebSocket %s', websocket_url)
@@ -44,6 +50,15 @@ class TestMonitorPlugin(object):
 
     def is_websocket_connected(self):
         return self._websocket is not None
+
+    def suite_name(self):
+        current_dir = os.getcwd()
+        # current_dir_base = op.basename(current_dir)
+        return '{}: {}'.format(socket.gethostname(),
+                               current_dir)
+
+    def suite_hash(self, suite_name):
+        return md5.md5(suite_name).hexdigest()
 
     def send_event(self, event):
         """Send event via WebSocket connection.
@@ -67,7 +82,13 @@ class TestMonitorPlugin(object):
 
     def pytest_sessionstart(self):
         self._log('*** py.test session started ***')
-        self.send_event(SessionStartedEvent())
+
+        self._current_suite = self.suite_name()
+        self._current_suite_hash = self.suite_hash(self._current_suite)
+        self.send_event(SessionStartedEvent(
+            suite_name=self._current_suite,
+            suite_hash=self._current_suite_hash
+        ))
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')

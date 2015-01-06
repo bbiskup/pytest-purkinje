@@ -69,11 +69,29 @@ def test_send_event_does_not_raise(plugin):
     assert not plugin._websocket.send.called
 
 
+def test_suite_name(plugin, monkeypatch):
+    monkeypatch.setattr(sut.os,
+                        'getcwd',
+                        Mock(return_value='/abc/xyz'))
+    monkeypatch.setattr(sut.socket,
+                        'gethostname',
+                        Mock(return_value='testhost'))
+    expected = 'testhost: /abc/xyz'
+    assert plugin.suite_name() == expected
+
+
 def test_pytest_sessionstart(plugin, monkeypatch):
     monkeypatch.setattr(plugin, 'send_event', Mock())
+    monkeypatch.setattr(plugin,
+                        'suite_name',
+                        Mock(return_value='testhost: /abc/xyz'))
+
     plugin.pytest_sessionstart()
     assert plugin.send_event.called
-    assert type(plugin.send_event.call_args[0][0]) == msg.SessionStartedEvent
+
+    arg = plugin.send_event.call_args[0][0]
+    assert type(arg) == msg.SessionStartedEvent
+    assert plugin._current_suite == 'testhost: /abc/xyz'
 
 
 def test_pytest_sessionfinish(plugin, monkeypatch):
