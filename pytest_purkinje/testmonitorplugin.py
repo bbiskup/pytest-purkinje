@@ -28,6 +28,10 @@ class TestMonitorPlugin(object):
 
        TODO graceful termination
     """
+    # needs to be at class level because py.test uses
+    # a new plugin instance when starting the test session
+    # after collecting test cases
+    tc_count = 0
 
     def __init__(self, websocket_url):
         self.reports = []
@@ -81,27 +85,37 @@ class TestMonitorPlugin(object):
 
     def pytest_sessionstart(self):
         self._log('*** py.test session started ***')
+        if TestMonitorPlugin.tc_count:
+            self._send_start_event()
+        else:
+            self._log('No test cases (yet)')
 
+    def _send_start_event(self):
         self._current_suite = self.suite_name()
         self._current_suite_hash = self.suite_hash(self._current_suite)
         self.send_event(SessionStartedEvent(
             suite_name=self._current_suite,
-            suite_hash=self._current_suite_hash
+            suite_hash=self._current_suite_hash,
+            tc_count=TestMonitorPlugin.tc_count
         ))
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
         self.send_event(ConnectionTerminationEvent(
             suite_hash=self._current_suite_hash
-            ))
+        ))
 
     # def pytest_collection_modifyitems(self, session, config, items):
     #     print('pytest_collection_modifyitems: {} {} {}'.format(session,
     #                                                            config,
     #                                                           items))
 
-    # def pytest_collectstart(self, collector):
-    #    self._log('pytest_collectstart: %s', collector)
+    def pytest_collectstart(self, collector):
+        self._log('pytest_collectstart: %s', collector)
+
+    def pytest_collectreport(self, report):
+        self._log('pytest_collectreport: %s', report)
+        TestMonitorPlugin.tc_count += len(report.result)
 
     def pytest_runtest_logreport(self, report):
         # self._log('pytest_runtest_logreport: %s', report)
