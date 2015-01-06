@@ -177,9 +177,21 @@ def test_pytest_runtest_logreport_ignore_tc_not_found(plugin,
 def test_pytest_runtest_logreport_no_detail(plugin, report, monkeypatch):
     monkeypatch.setattr(plugin, 'send_event', Mock())
     report.nodeid = report.fs_path
+    report.keywords = {}
     plugin.pytest_runtest_logreport(report)
     assert len(plugin.send_event.call_args_list) == 0
     assert len(plugin.reports) == 0
+
+
+def test_pytest_runtest_logreport_pep8(plugin, report, monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    report.nodeid = report.fs_path
+    report.keywords = {'pep8': 1}
+    report.when = 'setup'
+    report.outcome = 'skipped'
+    plugin.pytest_runtest_logreport(report)
+    assert len(plugin.send_event.call_args_list) == 2
+    assert len(plugin.reports) == 1
 
 
 @pytest.mark.parametrize('phase', ['setup', 'teardown'])
