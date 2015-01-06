@@ -8,6 +8,7 @@ import logging
 import time
 import socket
 import md5
+import _pytest.python as pyp
 from purkinje_messages.message import(
     SessionStartedEvent,
     TestCaseFinishedEvent, ConnectionTerminationEvent)
@@ -110,7 +111,13 @@ class TestMonitorPlugin(object):
 
     def pytest_collectreport(self, report):
         self._log('pytest_collectreport: %s', report)
-        TestMonitorPlugin.tc_count += len(report.result)
+
+        test_funcs = [x
+                      for x
+                      in report.result
+                      if isinstance(x, pyp.Function)
+                      ]
+        TestMonitorPlugin.tc_count += len(test_funcs)
         # import pdb; pdb.set_trace()
 
     def pytest_runtest_logreport(self, report):
