@@ -93,11 +93,7 @@ def test_pytest_sessionstart(plugin, monkeypatch):
                         Mock(return_value='testhost: /abc/xyz'))
 
     plugin.pytest_sessionstart()
-    assert plugin.send_event.called
-
-    arg = plugin.send_event.call_args[0][0]
-    assert type(arg) == msg.SessionStartedEvent
-    assert plugin._current_suite == 'testhost: /abc/xyz'
+    assert not plugin.send_event.called
 
 
 def test_pytest_sessionfinish(plugin, monkeypatch):
@@ -126,13 +122,28 @@ def test_pytest_runtest_logreport(plugin, report, monkeypatch):
 
     monkeypatch.setattr(plugin, '_test_cases', {report.nodeid: start_time})
     plugin.pytest_runtest_logreport(report)
-    assert len(plugin.send_event.call_args_list) == 1
+    assert len(plugin.send_event.call_args_list) == 2
 
-    event = plugin.send_event.call_args[0][0]
+    arg = plugin.send_event.call_args_list[0][0][0]
+    assert type(arg) == msg.SessionStartedEvent
+
+    event = plugin.send_event.call_args_list[1][0][0]
     assert type(event) == msg.TestCaseFinishedEvent
     assert event['duration'] == 5000
     assert len(plugin.reports) == 1
     assert plugin.reports[0] == report
+
+
+def test_pytest_runtest_logreport_starts_session_only_once(
+        report,
+        plugin,
+        monkeypatch):
+    monkeypatch.setattr(plugin, 'send_event', Mock())
+    monkeypatch.setattr(plugin,
+                        '_test_cases',
+                        {report.nodeid: time.time()})
+    plugin.pytest_runtest_logreport(report)
+    assert len(plugin.send_event.call_args_list) == 2
 
 
 def test_pytest_runtest_logreport_store_tc_start_time(plugin,
