@@ -9,7 +9,6 @@ import logging
 import time
 import socket
 import md5
-import _pytest.python as pyp
 from purkinje_messages.message import(
     SessionStartedEvent,
     TestCaseFinishedEvent, ConnectionTerminationEvent)
