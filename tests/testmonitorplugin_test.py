@@ -100,9 +100,13 @@ def test_pytest_sessionfinish(plugin, monkeypatch):
     monkeypatch.setattr(plugin, 'send_event', Mock())
     plugin.pytest_sessionfinish()
     assert plugin.send_event.called
+    assert len(plugin.send_event.call_args_list) == 2
 
-    arg = plugin.send_event.call_args[0][0]
-    assert type(arg) == msg.ConnectionTerminationEvent
+    m1 = plugin.send_event.call_args_list[0][0][0]
+    assert type(m1) == msg.SessionTerminatedEvent
+
+    m2 = plugin.send_event.call_args_list[1][0][0]
+    assert type(m2) == msg.ConnectionTerminationEvent
 
 
 def test_works_if_no_connection(plugin):
@@ -233,7 +237,7 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
                                   plugins=[plugin])
 
         send_args = plugin._websocket.send.call_args_list
-        assert len(send_args) == 3
+        assert len(send_args) == 4
 
         [json.dumps(x[0]) for x in send_args]
 

@@ -11,7 +11,9 @@ import socket
 import md5
 from purkinje_messages.message import(
     SessionStartedEvent,
-    TestCaseFinishedEvent, ConnectionTerminationEvent)
+    TestCaseFinishedEvent,
+    SessionTerminatedEvent,
+    ConnectionTerminationEvent)
 
 
 VERDICT_MAP = {
@@ -97,6 +99,9 @@ class TestMonitorPlugin(object):
 
     def pytest_sessionfinish(self):
         self._log('*** py.test session finished ***')
+        self.send_event(SessionTerminatedEvent(
+            suite_hash=self.suite_hash()
+        ))
         self.send_event(ConnectionTerminationEvent(
             suite_hash=self.suite_hash()
         ))
