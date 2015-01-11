@@ -1,1 +1,1 @@
-Bernhard Biskup <bbiskup@gmx.de>
+Bernhard (Bernd) Biskup <bbiskup@gmx.de>
