@@ -3,6 +3,6 @@ future==0.14.3
 watchdog==0.8.2
 websocket-client==0.23.0
 voluptuous==0.8.7
-flotsam==0.1.0
+flotsam>=0.1
 purkinje-messages>=0.1
 expiringdict==1.1.3
