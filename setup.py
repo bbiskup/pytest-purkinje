@@ -26,12 +26,12 @@ class Tox(TestCommand):
 
 
 setup(name='pytest-purkinje',
-      version='0.1.1',
+      version='0.1.2',
       description='py.test plugin for purkinje test runner',
       long_description=readme + '\n\n' + history,
       author='Bernhard (Bernd) Biskup',
       author_email='bbiskup@gmx.de',
-      url='biskup-software.de',
+      url='https://github.com/bbiskup',
       package_dir={'pytest_purkinje': 'pytest_purkinje'},
       packages=['pytest_purkinje'],
       zip_safe=False,
