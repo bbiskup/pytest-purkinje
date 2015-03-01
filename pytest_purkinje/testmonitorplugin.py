@@ -157,17 +157,17 @@ class TestMonitorPlugin(object):
         if report.when == 'setup':
             self._test_cases[rep_key] = time.time()
 
-        if ((report.when != 'call')
-                and not (report.when == 'setup'
-                         and report.outcome == 'skipped')):
+        if ((report.when != 'call') and not
+            (report.when == 'setup' and
+             report.outcome == 'skipped')):
             return
 
         if report.when == 'call':
             if rep_key not in self._test_cases:
                 self._log('Test case {} not found'.format(tc_name))
                 return
-            duration = int((time.time()
-                            - self._test_cases[rep_key]) * 1000)
+            duration = int((time.time() -
+                            self._test_cases[rep_key]) * 1000)
         else:
             duration = 0
 
