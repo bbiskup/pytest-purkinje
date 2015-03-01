@@ -2,7 +2,8 @@ pytest-purkinje
 ===============
 
 
-py.test plugin for `pukinje test runner <https://github.com/bbiskup/purkinje/>`_
+py.test plugin for the purkinje test runner.
+See `pukinje test runner <https://github.com/bbiskup/purkinje/>`_.
 
 Build Status
 ============
@@ -11,7 +12,7 @@ Build Status
 Branch Status
 ====== ===============
 dev    |travis-dev|
-master |travis-master| (TODO: set up .travis.yml for master, or disable build of master in Travis)
+master |travis-master|
 ====== ===============
 
 Coverage: |coveralls|
