@@ -6,6 +6,7 @@ cache:
   # TODO local node modules path correct?
   directories:
     - $HOME/.pip-cache/
+    - $HOME/.tox
     - /home/travis/virtualenv/python2.7
 install:
   - echo 'Running installation in directory $PWD'

@@ -26,7 +26,7 @@ class Tox(TestCommand):
 
 
 setup(name='pytest-purkinje',
-      version='0.1.3',
+      version='0.1.4',
       description='py.test plugin for purkinje test runner',
       long_description=readme + '\n\n' + history,
       author='Bernhard (Bernd) Biskup',
