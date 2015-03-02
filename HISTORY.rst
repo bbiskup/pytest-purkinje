@@ -1,6 +1,7 @@
 History
 =======
 
+- Mar 03, 2015: Release 0.1.4
 - Mar 02, 2015: Release 0.1.3
 - Mar 01, 2015: Release 0.1.2
 - Mar 01, 2015: Release 0.1.1
