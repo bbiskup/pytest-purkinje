@@ -3,7 +3,7 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 readme = open('README.rst').read()
-history = open('HISTORY.rst').read()
+changes = open('CHANGES.rst').read()
 
 
 def parse_requirements():
@@ -28,7 +28,7 @@ class Tox(TestCommand):
 setup(name='pytest-purkinje',
       version='0.1.4',
       description='py.test plugin for purkinje test runner',
-      long_description=readme + '\n\n' + history,
+      long_description=readme + '\n\n' + changes,
       author='Bernhard (Bernd) Biskup',
       author_email='bbiskup@gmx.de',
       url='https://github.com/bbiskup',
