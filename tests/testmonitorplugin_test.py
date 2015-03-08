@@ -256,7 +256,9 @@ def test_empty_single_pass(tmpdir, plugin, monkeypatch):
 def test_pytest_addoption():
     parser = Mock()
     sut.pytest_addoption(parser)
-    assert parser.addoption.call_args[0][0] == '--websocket_url'
+    print parser.addoption.call_args_list
+    assert parser.addoption.call_args_list[0][0][0] == '--websocket_host'
+    assert parser.addoption.call_args_list[1][0][0] == '--websocket_port'
 
 
 def test_pytest_configure():

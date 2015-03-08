@@ -3,7 +3,8 @@ pytest-purkinje
 
 
 py.test plugin for the purkinje test runner.
-See `pukinje test runner <https://github.com/bbiskup/purkinje/>`_.
+See `pukinje test runner <https://github.com/bbiskup/purkinje/>`_ on how
+to get started.
 
 Build Status
 ============
@@ -41,9 +42,7 @@ Conventions
 
 - uses `semantic versioning <http://semver.org/>`_
 - uses `git-flow git workflow <http://nvie.com/posts/a-successful-git-branching-model/>`_
-- Download archive: `branch *dev*`__
-
-__ https://github.com/bbiskup/pytest-purkinje/archive/dev.zip
+- `GitHub page <https://github.com/bbiskup/pytest-purkinje/>`_
 
 .. |travis-dev| image:: https://travis-ci.org/bbiskup/pytest-purkinje.svg?branch=dev
         :target: https://travis-ci.org/bbiskup/pytest-purkinje
