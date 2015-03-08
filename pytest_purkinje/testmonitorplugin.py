@@ -191,15 +191,26 @@ class TestMonitorPlugin(object):
 
 def pytest_addoption(parser):
     parser.addoption(
-        '--websocket_url',
+        '--websocket_host',
         nargs='?',
-        default='ws://localhost:5000/event',
+        default='localhost',
         const=True,
-        dest='websocket_url',
-        help='WebSocket URL of purkinje server'
+        dest='websocket_host',
+        help='WebSocket hostname or IP address of purkinje server'
+    )
+
+    parser.addoption(
+        '--websocket_port',
+        nargs='?',
+        default=5000,
+        const=True,
+        dest='websocket_port',
+        help='WebSocket TCP ort of purkinje server'
     )
 
 
 def pytest_configure(config):
-    websocket_url = config.getoption('websocket_url')
+    websocket_host = config.getoption('websocket_host')
+    websocket_port = config.getoption('websocket_port')
+    websocket_url = 'ws://{}:{}/event'.format(websocket_host, websocket_port)
     config.pluginmanager.register(TestMonitorPlugin(websocket_url))
