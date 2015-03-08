@@ -6,8 +6,8 @@ Some minor changes were omitted from this list. For details, see git log.
 Release 0.1.5
 -------------
 
-- Breaking change: replace plugin parameter websocket_url with
-  websocket_host and websocket_port. Please update your ``pytest.ini``
+- **Breaking change:** replaced plugin parameter ``websocket_url`` with
+  ``websocket_host`` and ``websocket_port``. Please update your ``pytest.ini``
   accordingly if you use non-default settings for purkinje.
 
 Release 0.1.4
