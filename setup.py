@@ -1,6 +1,6 @@
 import sys
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
+from setuptools.command.test import test as test_command
 
 readme = open('README.rst').read()
 changes = open('CHANGES.rst').read()
@@ -11,10 +11,10 @@ def parse_requirements():
         return [x for x in req.readlines() if not x.startswith('-e')]
 
 
-class Tox(TestCommand):
+class Tox(test_command):
 
     def finalize_options(self):
-        TestCommand.finalize_options(self)
+        test_command.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
@@ -26,7 +26,7 @@ class Tox(TestCommand):
 
 
 setup(name='pytest-purkinje',
-      version='0.1.4',
+      version='0.1.5',
       description='py.test plugin for purkinje test runner',
       long_description=readme + '\n\n' + changes,
       author='Bernhard (Bernd) Biskup',
