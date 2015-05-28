@@ -60,8 +60,8 @@ class TestMonitorPlugin(object):
     def suite_name(self):
         current_dir = os.getcwd()
         # current_dir_base = op.basename(current_dir)
-        return '{}: {}'.format(socket.gethostname(),
-                               current_dir)
+        return '{0}: {1}'.format(socket.gethostname(),
+                                 current_dir)
 
     def suite_hash(self):
         return md5.md5(self.suite_name()).hexdigest()
@@ -107,9 +107,9 @@ class TestMonitorPlugin(object):
         ))
 
     # def pytest_collection_modifyitems(self, session, config, items):
-    #     print('pytest_collection_modifyitems: {} {} {}'.format(session,
-    #                                                            config,
-    #                                                           items))
+    #     print('pytest_collection_modifyitems: {0} {1} {2}'.format(session,
+    #                                                               config,
+    #                                                               items))
 
     def pytest_collectstart(self, collector):
         self._log('pytest_collectstart: %s', collector)
@@ -164,7 +164,7 @@ class TestMonitorPlugin(object):
 
         if report.when == 'call':
             if rep_key not in self._test_cases:
-                self._log('Test case {} not found'.format(tc_name))
+                self._log('Test case {0} not found'.format(tc_name))
                 return
             duration = int((time.time() -
                             self._test_cases[rep_key]) * 1000)

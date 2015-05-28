@@ -42,7 +42,7 @@ class TestRunner:
         file_count = TestRunner.get_file_count(dir_)
         if file_count > max_user_watches:
             raise Exception(('User limit "max_user_watches" too low'
-                             ' ({}) to watch all {} files')
+                             ' ({0}) to watch all {1} files')
                             .format(max_user_watches, file_count))
 
     @staticmethod
@@ -68,7 +68,8 @@ class TestRunner:
         """Watch directory forever and execute test cases
            :param single_run: if True, only wait for a short time (testing)
         """
-        print('{}: watching directory "{}"'.format(self.__class__, self._dir))
+        print('{0}: watching directory "{1}"'.format(
+            self.__class__, self._dir))
         self.observer.schedule(self.event_handler, self._dir, recursive=True)
 
         # TODO should be checked when new files get added

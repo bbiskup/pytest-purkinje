@@ -112,7 +112,7 @@ class Handler(FileSystemEventHandler):
             print('>>>> %s NOT in cache' % cache_key)
             self._file_cache[cache_key] = True
 
-        print('>> Trigger: {}'.format(event))
+        print('>> Trigger: {0}'.format(event))
         self.run_tests()
 
     def run_tests(self):
