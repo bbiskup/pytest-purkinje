@@ -26,7 +26,7 @@ VERDICT_MAP = {
 
 def _log(fmt, *args):
     # TODO use print, logging or py.test facility if it exists
-    fmt = '** testmon: %s **' % fmt
+    fmt = '** testmon: {0} **'.format(fmt)
     print(fmt % args)
 
 

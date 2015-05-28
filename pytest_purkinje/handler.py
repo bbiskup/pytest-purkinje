@@ -106,10 +106,10 @@ class Handler(FileSystemEventHandler):
 
         cache_key = self._get_cache_key(event)
         if cache_key in self._file_cache:
-            print('>>>> %s is cached' % cache_key)
+            print('>>>> {0} is cached'.format(cache_key))
             return
         else:
-            print('>>>> %s NOT in cache' % cache_key)
+            print('>>>> {0} NOT in cache'.format(cache_key))
             self._file_cache[cache_key] = True
 
         print('>> Trigger: {0}'.format(event))
