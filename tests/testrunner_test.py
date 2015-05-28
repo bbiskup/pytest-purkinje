@@ -29,8 +29,8 @@ def test_creation(testrunner):
 def test_get_file_count(testrunner):
     # The directory itself counts as 1
     assert testrunner.get_file_count(testrunner._dir) == 1
-    f = open(op.join(testrunner._dir, 'a_file'), 'w')
-    f.close()
+    with open(op.join(testrunner._dir, 'a_file'), 'w'):
+        pass
 
     # The newly created file counts as one, too
     assert testrunner.get_file_count(testrunner._dir) == 2
