@@ -24,6 +24,12 @@ VERDICT_MAP = {
 }
 
 
+def _log(fmt, *args):
+    # TODO use print, logging or py.test facility if it exists
+    fmt = '** testmon: %s **' % fmt
+    print(fmt % args)
+
+
 class TestMonitorPlugin(object):
 
     """py.test plugin for monitoring test progress and
@@ -45,14 +51,14 @@ class TestMonitorPlugin(object):
         self._start_message_sent = False
 
         try:
-            self._log('Connecting to WebSocket %s', websocket_url)
+            _log('Connecting to WebSocket %s', websocket_url)
             self._websocket = websocket.create_connection(websocket_url)
         except ValueError as e:
-            self._log('Invalid WebSocket URL: "%s"',
-                      self._websocket_url)
+            _log('Invalid WebSocket URL: "%s"',
+                 self._websocket_url)
         except Exception as e:
-            self._log('Error connecting to WebSocket at URL %s: %s',
-                      self._websocket_url, e)
+            _log('Error connecting to WebSocket at URL %s: %s',
+                 self._websocket_url, e)
 
     def is_websocket_connected(self):
         return self._websocket is not None
@@ -79,15 +85,15 @@ class TestMonitorPlugin(object):
             if self._websocket:
                 self._websocket.send(ser_event)
             else:
-                self._log('purkinje server not available; event: %s',
-                          ser_event)
+                _log('purkinje server not available; event: %s',
+                     ser_event)
         except Exception as e:
             logging.exception(e)
-            self._log('Error while sending event "%s": %s',
-                      ser_event or event.data, e)
+            _log('Error while sending event "%s": %s',
+                 ser_event or event.data, e)
 
     def pytest_sessionstart(self):
-        self._log('*** py.test session started ***')
+        _log('*** py.test session started ***')
 
     def _send_start_event(self):
         self._current_suite = self.suite_name()
@@ -98,7 +104,7 @@ class TestMonitorPlugin(object):
         ))
 
     def pytest_sessionfinish(self):
-        self._log('*** py.test session finished ***')
+        _log('*** py.test session finished ***')
         self.send_event(SessionTerminatedEvent(
             suite_hash=self.suite_hash()
         ))
@@ -112,13 +118,13 @@ class TestMonitorPlugin(object):
     #                                                               items))
 
     def pytest_collectstart(self, collector):
-        self._log('pytest_collectstart: %s', collector)
+        _log('pytest_collectstart: %s', collector)
 
     def _is_relevant_tc(self, tc):
         return isinstance(tc, pytest.Item)
 
     def pytest_collectreport(self, report):
-        self._log('pytest_collectreport: %s', report)
+        _log('pytest_collectreport: %s', report)
 
         test_funcs = [x
                       for x
@@ -129,9 +135,9 @@ class TestMonitorPlugin(object):
         # import pdb; pdb.set_trace()
 
     def pytest_runtest_logreport(self, report):
-        # self._log('pytest_runtest_logreport: %s', report)
+        # _log('pytest_runtest_logreport: %s', report)
 
-        # self._log('######## self._test_cases: %s %s %s',
+        # _log('######## self._test_cases: %s %s %s',
         #          report.nodeid, report.when, self._test_cases)
 
         tc_file = report.fspath
@@ -164,7 +170,7 @@ class TestMonitorPlugin(object):
 
         if report.when == 'call':
             if rep_key not in self._test_cases:
-                self._log('Test case {0} not found'.format(tc_name))
+                _log('Test case {0} not found'.format(tc_name))
                 return
             duration = int((time.time() -
                             self._test_cases[rep_key]) * 1000)
@@ -182,11 +188,6 @@ class TestMonitorPlugin(object):
             duration=duration,
             suite_hash=self.suite_hash()))
         self.reports.append(report)
-
-    def _log(self, fmt, *args):
-        # TODO use print, logging or py.test facility if it exists
-        fmt = '** testmon: %s **' % fmt
-        print(fmt % args)
 
 
 def pytest_addoption(parser):
