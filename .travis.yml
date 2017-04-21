@@ -11,7 +11,7 @@ cache:
 install:
   - echo 'Running installation in directory $PWD'
   - # Python
-  - pip install -r dev-requirements.txt --download-cache $HOME/.pip-cache --use-mirrors
+  - pip install -r dev-requirements.txt --cache-dir $HOME/.pip-cache --use-mirrors
 
   - echo "Installed Python packages:"
   - pip freeze
