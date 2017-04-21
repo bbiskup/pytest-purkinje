@@ -9,7 +9,7 @@ import logging
 import time
 import socket
 import md5
-from purkinje_messages.message import(
+from purkinje_messages.message import (
     SessionStartedEvent,
     TestCaseFinishedEvent,
     SessionTerminatedEvent,
