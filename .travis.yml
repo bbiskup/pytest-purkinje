@@ -22,5 +22,5 @@ script:
   - # Documentation
   # - make doc
 
-after_succes:
+after_success:
   coveralls
