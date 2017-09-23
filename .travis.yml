@@ -8,6 +8,8 @@ cache:
     - $HOME/.pip-cache/
     - $HOME/.tox
     - /home/travis/virtualenv/python2.7
+before_script:
+  - sudo apt-get install pypy
 install:
   - echo 'Running installation in directory $PWD'
   - # Python
