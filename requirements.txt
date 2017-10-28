@@ -1,7 +1,7 @@
 pytest==3.1.0
 future==0.14.3
 watchdog==0.8.2
-websocket-client==0.23.0
+websocket-client==0.37.0
 voluptuous==0.8.7
 flotsam>=0.1
 #git+git://github.com/bbiskup/purkinje-messages.git@5ec2d2f1c2d687776f333840bc33ecfb255d523d
