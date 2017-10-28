@@ -4,5 +4,6 @@ watchdog==0.8.2
 websocket-client==0.23.0
 voluptuous==0.8.7
 flotsam>=0.1
-git+git://github.com/bbiskup/purkinje-messages.git@5ec2d2f1c2d687776f333840bc33ecfb255d523d
+#git+git://github.com/bbiskup/purkinje-messages.git@5ec2d2f1c2d687776f333840bc33ecfb255d523d
+https://github.com/bbiskup/purkinje-messages/archive/5ec2d2f1c2d687776f333840bc33ecfb255d523d.zip
 expiringdict==1.1.4

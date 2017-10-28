@@ -8,7 +8,16 @@ changes = open('CHANGES.rst').read()
 
 def parse_requirements():
     with open('requirements.txt') as req:
-        return [x for x in req.readlines() if not x.startswith('-e')]
+        return [x.strip() for x in req.readlines()
+                if not x.startswith('-e') and
+                not x.startswith('git+') and
+                not x.startswith('https://')]
+
+
+def parse_dependency_links():
+    with open('requirements.txt') as req:
+        return [x.strip() for x in req.readlines()
+                if x.startswith('https://')]
 
 
 class Tox(test_command):
@@ -36,7 +45,8 @@ setup(name='pytest-purkinje',
       packages=['pytest_purkinje'],
       zip_safe=False,
       include_package_data=True,
-      # install_requires=parse_requirements(),
+      install_requires=parse_requirements(),
+      dependency_links=parse_dependency_links(),
       entry_points={
           'pytest11': [
               'purkinje = pytest_purkinje.testmonitorplugin',
