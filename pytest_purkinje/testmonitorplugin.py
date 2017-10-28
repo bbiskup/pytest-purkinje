@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-import pytest
 from builtins import object
-import websocket
 import os
 import logging
 import time
 import socket
-import md5
+
+import six
+import pytest
+import websocket
+
 from purkinje_messages.message import (
     SessionStartedEvent,
     TestCaseFinishedEvent,
@@ -28,6 +30,19 @@ def _log(fmt, *args):
     # TODO use print, logging or py.test facility if it exists
     fmt = '** testmon: {0} **'.format(fmt)
     print(fmt % args)
+
+
+# Python version-specific hash function (md5 no longer exists in Python 3)
+if six.PY3:
+    import hashlib
+
+    def _hash_suite(suite_name):
+        return hashlib.md5(suite_name.encode('utf-8')).hexdigest()
+else:
+    import md5
+
+    def _hash_suite(suite_name):
+        return md5.md5(suite_name).hexdigest()
 
 
 class TestMonitorPlugin(object):
@@ -70,7 +85,7 @@ class TestMonitorPlugin(object):
                                  current_dir)
 
     def suite_hash(self):
-        return md5.md5(self.suite_name()).hexdigest()
+        return _hash_suite(self.suite_name())
 
     def send_event(self, event):
         """Send event via WebSocket connection.
