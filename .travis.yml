@@ -1,6 +1,7 @@
 language: python
 python:
   - "2.7"
+  - "3.5"
 cache:
   apt: true
   # TODO local node modules path correct?
@@ -19,10 +20,6 @@ install:
   - pip freeze
 
 script:
-  - tox
+  - py.test
+  - tox -e flake8
 
-  - # Documentation
-  # - make doc
-
-after_success:
-  coveralls
