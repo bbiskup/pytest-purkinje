@@ -68,7 +68,7 @@ class TestMonitorPlugin(object):
         try:
             _log('Connecting to WebSocket %s', websocket_url)
             self._websocket = websocket.create_connection(websocket_url)
-        except ValueError as e:
+        except ValueError:
             _log('Invalid WebSocket URL: "%s"',
                  self._websocket_url)
         except Exception as e:
